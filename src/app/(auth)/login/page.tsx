@@ -1,24 +1,14 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const schema = z.object({
-  email: z.string().email("Wprowadź poprawny adres e-mail."),
-  password: z.string().min(6, "Hasło musi mieć co najmniej 6 znaków."),
-});
-
+import { loginSchema, LoginSchema } from "@/lib/schemas/loginSchema";
 export default function LoginPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema),
+  const { register, handleSubmit } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: LoginSchema) => {
     console.log(data, "informacje z formularza");
   };
 
