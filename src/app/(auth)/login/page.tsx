@@ -3,13 +3,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginSchema } from "@/lib/schemas/loginSchema";
+import { signInUser } from "@/app/actions/authActions";
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = (data: LoginSchema) => {
-    console.log(data, "informacje z formularza");
+    const result = signInUser(data);
+    console.log(result, "result");
   };
 
   return (

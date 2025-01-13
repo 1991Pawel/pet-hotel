@@ -11,7 +11,6 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterSchema) => {
-    console.log(data, "informacje z formularza");
     const result = await registerUser(data);
     console.log(result, "result");
   };
