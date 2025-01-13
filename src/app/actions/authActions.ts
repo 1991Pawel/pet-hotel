@@ -3,7 +3,7 @@ import { signIn } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { RegisterSchema, registerSchema } from "@/lib/schemas/registerSchema";
 import { LoginSchema } from "@/lib/schemas/loginSchema";
-import bycrypt from "bcrypt";
+import bycrypt from "bcryptjs";
 
 export async function signInUser(data: LoginSchema) {
   await signIn("credentials", {

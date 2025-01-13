@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import styles from "./page.module.css";
 
 export default async function Home() {
@@ -10,6 +10,14 @@ export default async function Home() {
         <div>
           <h1>Logged In</h1>
           <p>Session: {JSON.stringify(session, null, 2)}</p>
+          <form
+            action={async () => {
+              "use server";
+              await signOut();
+            }}
+          >
+            <button>Sign Out</button>
+          </form>
         </div>
       ) : null}
       Home Page
