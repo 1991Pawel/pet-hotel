@@ -4,14 +4,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginSchema } from "@/lib/schemas/loginSchema";
 import { signInUser } from "@/app/actions/authActions";
+import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
+  const router = useRouter();
 
-  const onSubmit = (data: LoginSchema) => {
-    const result = signInUser(data);
-    console.log(result, "result");
+  const onSubmit = async (data: LoginSchema) => {
+    const result = await signInUser(data);
+    if (result.status === "success") {
+      router.push("/");
+    }
   };
 
   return (
