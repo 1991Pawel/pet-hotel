@@ -1,2 +1,2 @@
 export const publicRoutes = ["/"];
-export const authRoutes = ["/dashboard"];
+export const authRoutes = ["/login", "/register", "/dashboard"];

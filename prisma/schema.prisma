@@ -16,7 +16,23 @@ datasource db {
 
 
 model User {
-  id              String    @id @default(cuid())
-  email           String?   @unique
-  passwordHash    String?
+  id           String   @id @default(cuid())
+  email        String?
+  passwordHash String?
+  member       Member?
+}
+
+model Member {
+id                String    @id @default(cuid())
+  userId            String    @unique
+  name              String
+  photos            Photo[]
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Photo {
+  id         String  @id @default(cuid())
+  url        String
+  memberId   String
+  member     Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }

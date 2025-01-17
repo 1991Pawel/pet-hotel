@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    domains: ["www.gravatar.com", "cdn.cloudflare.steamstatic.com"],
+  },
+};
 
 export default nextConfig;
