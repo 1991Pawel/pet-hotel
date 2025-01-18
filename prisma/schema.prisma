@@ -20,6 +20,7 @@ model User {
   email        String?
   passwordHash String?
   member       Member?
+  role         String   @default("USER")
 }
 
 model Member {

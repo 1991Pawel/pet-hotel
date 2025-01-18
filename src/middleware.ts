@@ -8,7 +8,6 @@ export default auth((req) => {
 
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-  console.log("ispublic", isPublicRoute);
 
   if (isPublicRoute) {
     return NextResponse.next();

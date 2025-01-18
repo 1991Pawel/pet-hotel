@@ -1,0 +1,8 @@
+.user {
+  max-width: 500px;
+  margin: 24px auto;
+}
+.userName {
+  font-size: 32px;
+  margin-bottom: 24px;
+}
