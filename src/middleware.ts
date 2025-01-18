@@ -9,12 +9,15 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
+  if (isPublicRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL("/dashboard", nextUrl));
+  }
+  if (isAuthRoute && !isLoggedIn) {
+    return NextResponse.redirect(new URL("/login", nextUrl));
+  }
   if (isPublicRoute) {
     return NextResponse.next();
   }
-  // if (isAuthRoute && !isLoggedIn) {
-  //   return NextResponse.redirect(new URL("/login", nextUrl));
-  // }
 
   return NextResponse.next();
 });

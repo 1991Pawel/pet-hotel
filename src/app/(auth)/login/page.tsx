@@ -14,7 +14,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginSchema) => {
     const result = await signInUser(data);
     if (result.status === "success") {
-      router.push("/");
+      router.push("/dashboard");
     }
   };
 

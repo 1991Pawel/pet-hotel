@@ -1,6 +1,8 @@
 import Link from "next/link";
 import style from "./Navigation.module.css";
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
+
+import LogoutButton from "./LogoutButton";
 
 const links = [
   {
@@ -18,14 +20,7 @@ export default async function Navigation() {
   return (
     <nav className={style.navigation}>
       {session ? (
-        <form
-          action={async () => {
-            "use server";
-            await signOut();
-          }}
-        >
-          <button className={style.link}>Sign Out</button>
-        </form>
+        <LogoutButton />
       ) : (
         <ul className={style.list}>
           {links.map((link) => (
