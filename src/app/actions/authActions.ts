@@ -1,5 +1,5 @@
 "use server";
-import { signIn } from "@/auth";
+import { signIn, auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { RegisterSchema, registerSchema } from "@/lib/schemas/registerSchema";
 import { LoginSchema } from "@/lib/schemas/loginSchema";
@@ -63,5 +63,20 @@ export async function registerUser(data: RegisterSchema) {
   } catch (error) {
     console.log(error);
     return { status: "error", error: "Something went wrong" };
+  }
+}
+
+export async function getAuthUserId() {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+
+    return userId;
+  } catch (error) {
+    throw error;
   }
 }

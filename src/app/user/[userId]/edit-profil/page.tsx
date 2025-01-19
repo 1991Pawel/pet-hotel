@@ -1,16 +1,12 @@
+import { getAuthUserId } from "@/app/actions/authActions";
 import { getMemberByUserId } from "@/app/actions/memberActions";
 import styles from "./page.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 
-export default async function UsersId({
-  params: { userId },
-}: {
-  params: {
-    userId: string;
-  };
-}) {
+export default async function UsersId() {
+  const userId = await getAuthUserId();
+
   const member = await getMemberByUserId(userId);
 
   if (!member) {
@@ -19,19 +15,21 @@ export default async function UsersId({
   return (
     <div>
       <div className={styles.user}>
-        <h2 className={styles.userName}>{member.name}</h2>
+        <h2>Edytcja profilu</h2>
+        <br />
+        <h2 className={styles.userName}> Zdjęcia:</h2>
 
-        {member.photos[0].url && (
+        {member.photos.map((photo) => (
           <Image
+            key={photo.id}
             className={styles.image}
             alt={member.name}
-            src={member.photos[0].url}
+            src={photo.url}
             width={100}
             layout="responsive"
             height={100}
           />
-        )}
-        <Link href={`/user/${userId}/edit-profil`}>edit</Link>
+        ))}
       </div>
     </div>
   );
