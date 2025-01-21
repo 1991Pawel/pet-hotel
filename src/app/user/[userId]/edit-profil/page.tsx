@@ -15,8 +15,13 @@ export default async function UsersId() {
   return (
     <div>
       <div className={styles.user}>
-        <h2>Edytcja profilu</h2>
+        <h2>Profil</h2>
         <br />
+        <h1 className={styles.userName}>
+          {" "}
+          imie:
+          {member.name}
+        </h1>
         <h2 className={styles.userName}> Zdjęcia:</h2>
 
         {member.photos.map((photo) => (

@@ -31,7 +31,6 @@ export default async function UsersId({
             height={100}
           />
         )}
-        <Link href={`/user/${userId}/edit-profil`}>edit</Link>
       </div>
     </div>
   );
