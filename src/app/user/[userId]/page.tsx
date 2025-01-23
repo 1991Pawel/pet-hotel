@@ -2,7 +2,6 @@ import { getMemberByUserId } from "@/app/actions/memberActions";
 import styles from "./page.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 
 export default async function UsersId({
   params: { userId },

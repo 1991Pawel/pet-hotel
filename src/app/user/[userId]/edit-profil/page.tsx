@@ -3,6 +3,7 @@ import { getMemberByUserId } from "@/app/actions/memberActions";
 import styles from "./page.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import UserEditForm from "@/app/components/UserEditForm";
 
 export default async function UsersId() {
   const userId = await getAuthUserId();
@@ -35,6 +36,7 @@ export default async function UsersId() {
             height={100}
           />
         ))}
+        <UserEditForm member={member} />
       </div>
     </div>
   );
