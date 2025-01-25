@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import UserEditForm from "@/app/components/UserEditForm";
+import UserPhotoUpload from "@/app/components/UserPhotoUpload";
 
 export default async function UsersId() {
   const userId = await getAuthUserId();
@@ -31,11 +32,11 @@ export default async function UsersId() {
             className={styles.image}
             alt={member.name}
             src={photo.url}
-            width={100}
-            layout="responsive"
-            height={100}
+            width={300}
+            height={300}
           />
         ))}
+        <UserPhotoUpload />
         <UserEditForm member={member} />
       </div>
     </div>

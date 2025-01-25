@@ -33,6 +33,7 @@ id                String    @id @default(cuid())
 
 model Photo {
   id         String  @id @default(cuid())
+  publicId   String?
   url        String
   memberId   String
   member     Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)

@@ -21,7 +21,6 @@ export default async function Dashboard() {
                     alt={member.name}
                     src={member.photos[0].url}
                     width={100}
-                    layout="responsive"
                     height={100}
                   />
                 )}
