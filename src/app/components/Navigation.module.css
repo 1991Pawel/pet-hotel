@@ -16,3 +16,24 @@
   color: #fff;
   padding: 12px;
 }
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.auth {
+  display: flex;
+  justify-content: space-between;
+}
+.user {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+.user button {
+  background: #333;
+  color: #fff;
+  padding: 12px;
+}
