@@ -22,9 +22,7 @@ export default async function Navigation() {
   const session = await auth();
   const userId = session?.user?.id || "";
   const member = await getMemberByUserId(userId);
-  if (!member) {
-    return notFound();
-  }
+
   return (
     <nav className={style.navigation}>
       {session ? (
@@ -43,7 +41,7 @@ export default async function Navigation() {
               <div className={style.avatar}>
                 <Image
                   src={
-                    member.photos[0].url || "/assets/placeholder-avatar.webp"
+                    member?.photos[0].url || "/assets/placeholder-avatar.webp"
                   }
                   height={32}
                   width={32}

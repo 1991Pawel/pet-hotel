@@ -1,0 +1,77 @@
+.container {
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #333;
+}
+
+.description {
+  font-size: 16px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.input:focus {
+  border-color: #007bff;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+.suggestions {
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+.suggestion {
+  padding: 12px 15px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.suggestion:hover {
+  background: #f0f8ff;
+}
+
+.suggestion:last-child {
+  border-bottom: none;
+}
+
+/* Animacja fadeIn */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

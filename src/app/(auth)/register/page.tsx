@@ -1,9 +1,10 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "@/app/actions/authActions";
 import { RegisterSchema, registerSchema } from "@/lib/schemas/registerSchema";
+import Map from "@/app/components/Map";
+import Geocoder from "@/app/components/Geocoder";
 
 export default function RegisterPage() {
   const { register, handleSubmit } = useForm<RegisterSchema>({
@@ -32,6 +33,11 @@ export default function RegisterPage() {
 
         <button type="submit">Log In</button>
       </form>
+      {/* <Map /> */}
+      <Geocoder
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ""}
+        position="top-left"
+      />
     </div>
   );
 }
