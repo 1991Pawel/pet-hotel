@@ -2,11 +2,21 @@
 
 import React, { useState } from "react";
 import styles from "./Geocoder.module.css";
+
+type Feature = {
+  place_name_pl: string;
+};
+
+type SuggestionType = {
+  features: Feature[];
+};
+
 const Geocoder = () => {
-  const [input, setInput] = useState("warszaw");
-  const [locationData, setLocationData] = useState(null);
-  const suggestionsList = locationData?.features.map((f) => f.place_name) || [];
-  const [suggestions, setSuggestions] = useState(suggestionsList);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [locationData, setLocationData] = useState<SuggestionType | null>(null);
+
+  const suggestionsList =
+    locationData?.features.map((f) => f.place_name_pl) || [];
 
   const fetchSuggestions = async (input: string) => {
     if (!input.length) return;
@@ -17,21 +27,20 @@ const Geocoder = () => {
       },
       body: JSON.stringify({ query: input }),
     });
-    const data = await response.json();
+    const data: { data: SuggestionType } = await response.json();
 
     setLocationData(data.data);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setInput(value);
+    setSelectedLocation(value);
     fetchSuggestions(value);
-    setSuggestions(suggestionsList);
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    setInput(suggestion);
-    setSuggestions([]);
+  const handleSuggestionClick = (suggestion: string) => {
+    setSelectedLocation(suggestion);
+    setLocationData(null);
   };
 
   return (
@@ -43,13 +52,14 @@ const Geocoder = () => {
       <input
         type="text"
         placeholder="Wprowadź adres"
-        value={input}
+        value={selectedLocation}
         onChange={handleInputChange}
         className={styles.input}
       />
-      {suggestions.length > 0 && (
+
+      {suggestionsList.length > 0 && (
         <ul className={styles.suggestions}>
-          {suggestions.map((suggestion, index) => (
+          {suggestionsList.map((suggestion, index) => (
             <li
               key={index}
               onClick={() => handleSuggestionClick(suggestion)}

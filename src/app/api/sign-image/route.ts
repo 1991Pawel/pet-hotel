@@ -1,13 +1,5 @@
 import cloudinary from "cloudinary";
-
-function assertString(
-  value: unknown,
-  errorMessage: string
-): asserts value is string {
-  if (typeof value !== "string") {
-    throw new Error(errorMessage);
-  }
-}
+import { assertString } from "@/lib/utils";
 
 export async function POST(req: Request) {
   const body = await req.json();

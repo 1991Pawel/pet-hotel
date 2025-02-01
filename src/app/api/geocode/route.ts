@@ -6,10 +6,12 @@ export async function POST(req: Request) {
 
     const mapboxUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
       query
-    )}.json?access_token=${mapboxToken}&autocomplete=true&limit=5&country=PL&language=pl`;
+    )}.json?access_token=${mapboxToken}&autocomplete=true&limit=5&country=PL&language=pl&types=locality,address`;
 
     const response = await fetch(mapboxUrl);
+
     const data = await response.json();
+    console.log(data);
 
     if (!response.ok) {
       throw new Error("Błąd podczas komunikacji z Mapbox API.");
