@@ -11,8 +11,12 @@ type SuggestionType = {
   features: Feature[];
 };
 
-const Geocoder = () => {
-  const [selectedLocation, setSelectedLocation] = useState("");
+type GeocoderProps = {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+const Geocoder = ({ value, onChange }: GeocoderProps) => {
   const [locationData, setLocationData] = useState<SuggestionType | null>(null);
 
   const suggestionsList =
@@ -33,26 +37,24 @@ const Geocoder = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSelectedLocation(value);
-    fetchSuggestions(value);
+    const newValue = e.target.value;
+    onChange(newValue);
+    fetchSuggestions(newValue);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    setSelectedLocation(suggestion);
+    onChange(suggestion);
     setLocationData(null);
   };
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Geocoder z Autocomplete</h2>
-      <p className={styles.description}>
-        Wpisz adres, aby zobaczyć podpowiedzi:
-      </p>
+      <h2 className={styles.title}>adress</h2>
+
       <input
         type="text"
         placeholder="Wprowadź adres"
-        value={selectedLocation}
+        value={value}
         onChange={handleInputChange}
         className={styles.input}
       />

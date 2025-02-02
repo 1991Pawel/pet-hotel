@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "@/app/actions/authActions";
 import { RegisterSchema, registerSchema } from "@/lib/schemas/registerSchema";
@@ -7,12 +7,13 @@ import { RegisterSchema, registerSchema } from "@/lib/schemas/registerSchema";
 import Geocoder from "@/app/components/Geocoder";
 
 export default function RegisterPage() {
-  const { register, handleSubmit } = useForm<RegisterSchema>({
+  const { register, handleSubmit, control } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
   });
 
   const onSubmit = async (data: RegisterSchema) => {
-    const result = await registerUser(data);
+    // const result = await registerUser(data);
+    console.log(data);
     if (result.status === "error") {
       alert(result.error);
     }
@@ -30,11 +31,16 @@ export default function RegisterPage() {
           <label htmlFor="password">Password:</label>
           <input {...register("password")} type="password" id="password" />
         </div>
+        <Controller
+          name="location"
+          control={control}
+          defaultValue=""
+          render={({ field }) => <Geocoder {...field} />}
+        />
 
         <button type="submit">Log In</button>
       </form>
       {/* <Map /> */}
-      <Geocoder position="top-left" />
     </div>
   );
 }
