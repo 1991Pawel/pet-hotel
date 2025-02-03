@@ -1,16 +1,7 @@
 .container {
-  padding: 20px;
   font-family: "Arial", sans-serif;
   max-width: 400px;
   margin: 0 auto;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-align: center;
-  color: #333;
 }
 
 .description {
@@ -64,7 +55,6 @@
   border-bottom: none;
 }
 
-/* Animacja fadeIn */
 @keyframes fadeIn {
   from {
     opacity: 0;
