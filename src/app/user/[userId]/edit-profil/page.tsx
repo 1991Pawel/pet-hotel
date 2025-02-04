@@ -5,11 +5,14 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import UserEditForm from "@/app/components/UserEditForm";
 import UserPhotoUpload from "@/app/components/UserPhotoUpload";
+import Map from "@/app/components/Map";
 
 export default async function UsersId() {
   const userId = await getAuthUserId();
 
   const member = await getMemberByUserId(userId);
+
+  console.log(member, "member");
 
   if (!member) {
     return notFound();
@@ -25,7 +28,6 @@ export default async function UsersId() {
           {member.name}
         </h1>
         <h2 className={styles.userName}> Zdjęcia:</h2>
-
         {member.photos.map((photo) => (
           <Image
             key={photo.id}
@@ -37,7 +39,9 @@ export default async function UsersId() {
           />
         ))}
         <UserPhotoUpload />
+        {JSON.stringify(member)}
         <UserEditForm member={member} />
+        <Map location={member.location} />
       </div>
     </div>
   );

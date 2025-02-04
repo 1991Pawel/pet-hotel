@@ -47,7 +47,7 @@ export async function registerUser(data: RegisterSchema) {
       return { status: "error", error: validated.error.errors };
     }
     // Tylko w przypadku sukcesu możemy bezpiecznie odczytać dane
-    const { email, password } = validated.data;
+    const { email, password, location, coordinates } = validated.data;
     const hashedPassword = await bycrypt.hash(password, 10);
     const existingUser = await getUserByEmail(data.email);
     if (existingUser) {
@@ -55,8 +55,23 @@ export async function registerUser(data: RegisterSchema) {
     }
     const user = await prisma.user.create({
       data: {
-        email,
+        email: email,
         passwordHash: hashedPassword,
+
+        member: {
+          create: {
+            name: "",
+            location: {
+              create: [
+                {
+                  address: location,
+                  longitude: coordinates[0],
+                  latitude: coordinates[1],
+                },
+              ],
+            },
+          },
+        },
       },
     });
     return { status: "success", data, user };

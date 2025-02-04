@@ -41,7 +41,7 @@ export default async function Navigation() {
               <div className={style.avatar}>
                 <Image
                   src={
-                    member?.photos[0].url || "/assets/placeholder-avatar.webp"
+                    member?.photos[0]?.url || "/assets/placeholder-avatar.webp"
                   }
                   height={32}
                   width={32}

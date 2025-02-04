@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "@/app/actions/authActions";
 import { RegisterSchema, registerSchema } from "@/lib/schemas/registerSchema";
-// import Map from "@/app/components/Map";
+
 import Geocoder from "@/app/components/Geocoder";
 
 export default function RegisterPage() {
@@ -25,11 +25,11 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterSchema) => {
-    // const result = await registerUser(data);
+    const result = await registerUser(data);
     console.log(data, "data");
-    // if (result.status === "error") {
-    //   alert(result.error);
-    // }
+    if (result.status === "error") {
+      alert(result.error);
+    }
   };
 
   const handleLocationSelect = ({
@@ -57,18 +57,20 @@ export default function RegisterPage() {
           <input {...register("password")} type="password" id="password" />
           {errors.password && <p>{errors.password.message}</p>}
         </div>
-        <Controller
-          name="location"
-          control={control}
-          render={({ field }) => (
-            <Geocoder {...field} onLocationSelect={handleLocationSelect} />
-          )}
-        />
-        {errors.location && <p>{errors.location.message}</p>}
+        <div>
+          <Controller
+            name="location"
+            control={control}
+            render={({ field }) => (
+              <Geocoder {...field} onLocationSelect={handleLocationSelect} />
+            )}
+          />
+          {errors.location && <p>{errors.location.message}</p>}
+        </div>
+
         <br />
         <button type="submit">Log In</button>
       </form>
-      {/* <Map /> */}
     </div>
   );
 }

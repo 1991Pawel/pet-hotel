@@ -31,6 +31,7 @@ export async function getMemberByUserId(id: string) {
       },
       include: {
         photos: true,
+        location: true,
       },
     });
   } catch (error) {

@@ -6,7 +6,7 @@ import styles from "./Geocoder.module.css";
 type Feature = {
   place_name: string;
   geometry: {
-    coordinates: [number, number]; // [longitude, latitude]
+    coordinates: [number, number];
   };
 };
 
@@ -55,14 +55,17 @@ const Geocoder = ({ value, onChange, onLocationSelect }: GeocoderProps) => {
   const suggestions = locationData?.features || [];
 
   return (
-    <div className={styles.container}>
+    <>
+      <label htmlFor="location">Adres</label>
       <input
+        id="location"
         type="text"
         placeholder="Wprowadź adres"
         value={value}
         onChange={handleInputChange}
         className={styles.input}
       />
+
       {suggestions.length > 0 && (
         <ul className={styles.suggestions}>
           {suggestions.map((suggestion, index) => (
@@ -76,7 +79,7 @@ const Geocoder = ({ value, onChange, onLocationSelect }: GeocoderProps) => {
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
 };
 

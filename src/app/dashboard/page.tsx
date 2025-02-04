@@ -16,7 +16,7 @@ export default async function Dashboard() {
             <Link key={member.id} href={`/user/${member.userId}`}>
               <div className={styles.usersList}>
                 <h2>{member.name}</h2>
-                {member.photos[0].url && (
+                {member.photos[0]?.url && (
                   <Image
                     alt={member.name}
                     src={member.photos[0].url}

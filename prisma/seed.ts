@@ -10,6 +10,7 @@ async function seedMembers() {
       data: {
         email: member.email,
         passwordHash: await hash("password", 10),
+
         member: {
           create: {
             name: member.name,
@@ -17,6 +18,13 @@ async function seedMembers() {
               create: {
                 url: member.image,
               },
+            },
+            location: {
+              create: member.location?.map((loc) => ({
+                address: loc.address,
+                latitude: loc.latitude,
+                longitude: loc.longitude,
+              })),
             },
           },
         },
