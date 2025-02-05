@@ -12,8 +12,6 @@ export default async function UsersId() {
 
   const member = await getMemberByUserId(userId);
 
-  console.log(member, "member");
-
   if (!member) {
     return notFound();
   }
@@ -39,9 +37,9 @@ export default async function UsersId() {
           />
         ))}
         <UserPhotoUpload />
-        {JSON.stringify(member)}
+
         <UserEditForm member={member} />
-        <Map location={member.location} />
+        {/* <Map location={member.location} /> */}
       </div>
     </div>
   );

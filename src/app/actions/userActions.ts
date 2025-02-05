@@ -3,27 +3,43 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUserId } from "./authActions";
 import { EditSchema, editSchema } from "@/lib/schemas/editSchema";
+import { getMemberByUserId } from "./memberActions";
 
 export async function updateMember(data: EditSchema) {
-  console.log(data, "data");
   try {
     const userId = await getAuthUserId();
+    const member = await getMemberByUserId(userId);
+
+    if (member === null) {
+      return { status: "error", error: "Member not found" };
+    }
 
     const validate = editSchema.safeParse(data);
     if (!validate.success) {
       return { status: "error", error: validate.error.errors };
     }
-    const { name } = validate.data;
+    const { name, location, coordinates } = validate.data;
 
-    const member = await prisma.member.update({
-      where: {
-        userId,
-      },
+    console.log(data, "validate.data");
+
+    const memberData = await prisma.member.update({
+      where: { userId },
       data: {
         name,
+        location: {
+          updateMany: {
+            where: { memberId: member.id },
+            data: {
+              address: location,
+              latitude: coordinates[0],
+              longitude: coordinates[1],
+            },
+          },
+        },
       },
     });
-    return { status: "success", data: member };
+
+    return { status: "success", data: memberData };
   } catch (error) {
     console.log(error);
     return { status: "error", error: "Something went wrong" };
