@@ -32,15 +32,9 @@ export default function UserEditForm({ member }: Props) {
     },
   });
 
-  // location: member.location[0].address,
-  // coordinates: member.location[0].coordinates,
-
   const router = useRouter();
 
-  console.log(member, "member");
-
   const onSubmit = async (data: EditSchema) => {
-    console.log(data, "222121212121");
     const result = await updateMember(data);
     if (result.status === "success") {
       reset(data);
@@ -59,7 +53,6 @@ export default function UserEditForm({ member }: Props) {
     setValue("coordinates", coordinates);
   };
 
-  console.log("errors", errors);
   return (
     <div className={style.form}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -80,11 +73,6 @@ export default function UserEditForm({ member }: Props) {
             {errors.name.message}
           </span>
         )}
-        <span>
-          Położenie geograficzne
-          <br />
-          {latitude}, {longitude}
-        </span>
 
         <br />
         <button disabled={!isValid || !isDirty || isSubmitting}>

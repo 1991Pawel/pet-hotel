@@ -50,6 +50,8 @@ export async function registerUser(data: RegisterSchema) {
     const { email, password, location, coordinates } = validated.data;
     const hashedPassword = await bycrypt.hash(password, 10);
     const existingUser = await getUserByEmail(data.email);
+
+    console.log(coordinates, "coordinates");
     if (existingUser) {
       return { status: "error", error: "User already exists" };
     }
@@ -65,8 +67,8 @@ export async function registerUser(data: RegisterSchema) {
               create: [
                 {
                   address: location,
-                  longitude: coordinates[0],
-                  latitude: coordinates[1],
+                  longitude: coordinates[1],
+                  latitude: coordinates[0],
                 },
               ],
             },

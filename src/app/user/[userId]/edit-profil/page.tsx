@@ -39,7 +39,7 @@ export default async function UsersId() {
         <UserPhotoUpload />
 
         <UserEditForm member={member} />
-        {/* <Map location={member.location} /> */}
+        <Map location={member.location} />
       </div>
     </div>
   );
