@@ -31,8 +31,8 @@ export async function updateMember(data: EditSchema) {
             where: { memberId: member.id },
             data: {
               address: location,
-              latitude: coordinates[0],
-              longitude: coordinates[1],
+              latitude: coordinates[1],
+              longitude: coordinates[0],
             },
           },
         },

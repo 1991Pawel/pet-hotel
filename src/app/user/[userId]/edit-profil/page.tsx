@@ -26,16 +26,21 @@ export default async function UsersId() {
           {member.name}
         </h1>
         <h2 className={styles.userName}> Zdjęcia:</h2>
+
         {member.photos.map((photo) => (
-          <Image
-            key={photo.id}
-            className={styles.image}
-            alt={member.name}
-            src={photo.url}
-            width={300}
-            height={300}
-          />
+          <div key={photo.id} className="imageWrapper">
+            <button>główne</button>
+            <Image
+              className={styles.image}
+              alt={member.name}
+              src={photo.url}
+              width={300}
+              height={300}
+            />
+            <button>usun</button>
+          </div>
         ))}
+
         <UserPhotoUpload />
 
         <UserEditForm member={member} />
