@@ -2,10 +2,10 @@ import { getAuthUserId } from "@/app/actions/authActions";
 import { getMemberByUserId } from "@/app/actions/memberActions";
 import styles from "./page.module.css";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import UserEditForm from "@/app/components/UserEditForm";
 import UserPhotoUpload from "@/app/components/UserPhotoUpload";
 import Map from "@/app/components/Map";
+import PhotoList from "@/app/components/PhotoList";
 
 export default async function UsersId() {
   const userId = await getAuthUserId();
@@ -27,7 +27,7 @@ export default async function UsersId() {
         </h1>
         <h2 className={styles.userName}> Zdjęcia:</h2>
 
-        {member.photos.map((photo) => (
+        {/* {member.photos.map((photo) => (
           <div key={photo.id} className="imageWrapper">
             <button>główne</button>
             <Image
@@ -37,9 +37,10 @@ export default async function UsersId() {
               width={300}
               height={300}
             />
-            <button>usun</button>
+            <button action={() => deletePhoto(photo.id)}>usun</button>
           </div>
-        ))}
+        ))} */}
+        <PhotoList photos={member.photos} />
 
         <UserPhotoUpload />
 
