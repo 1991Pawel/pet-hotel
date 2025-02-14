@@ -51,6 +51,19 @@ export async function addImage(url: string, publicId: string) {
   try {
     const userId = await getAuthUserId();
 
+    const member = await prisma.member.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+    if (!member) {
+      return { status: "error", error: "Member not found" };
+    }
+    const hasPhotos = await prisma.photo.findFirst({
+      where: { memberId: member.id },
+    });
+
+    //check if user already has a  picture
+
     return prisma.member.update({
       where: {
         userId,
@@ -60,6 +73,7 @@ export async function addImage(url: string, publicId: string) {
           create: {
             url,
             publicId,
+            isMain: !hasPhotos,
           },
         },
       },
@@ -88,6 +102,35 @@ export async function deleteImage(photoId: string) {
           },
         },
       },
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function setMainImage(photoId: string) {
+  try {
+    const userId = await getAuthUserId();
+
+    const photo = await prisma.photo.findUnique({
+      where: { id: photoId },
+      select: { memberId: true },
+    });
+
+    if (!photo) {
+      throw new Error("Zdjęcie nie istnieje.");
+    }
+
+    console.log(photo.memberId, "phmemberIdmemberIdmemberIdmemberIdoto");
+
+    await prisma.photo.updateMany({
+      where: { memberId: photo.memberId },
+      data: { isMain: false },
+    });
+
+    return await prisma.photo.update({
+      where: { id: photoId },
+      data: { isMain: true },
     });
   } catch (error) {
     throw error;

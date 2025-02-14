@@ -1,11 +1,12 @@
 "use client";
-import { deleteImage } from "@/app/actions/userActions";
+import { deleteImage, setMainImage } from "@/app/actions/userActions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 type Photo = {
   id: string;
   url: string;
+  isMain: boolean;
 };
 
 export default function PhotoList({ photos }: { photos: Photo[] }) {
@@ -20,11 +21,27 @@ export default function PhotoList({ photos }: { photos: Photo[] }) {
     }
   };
 
+  const handleSetMainPhoto = async (photoId: string) => {
+    try {
+      await setMainImage(photoId);
+      router.refresh();
+    } catch (error) {
+      alert("Nie udało się ustawić zdjęcia jako główne");
+      console.error(error);
+    }
+  };
+
+  console.log(photos);
   return (
     <div>
       {photos.map((photo) => (
         <div key={photo.id}>
-          <button>Główne</button>
+          {photo.isMain ? (
+            <span>❤️</span>
+          ) : (
+            <button onClick={() => handleSetMainPhoto(photo.id)}>Główne</button>
+          )}
+
           <Image
             alt="Zdjęcie użytkownika"
             src={photo.url}

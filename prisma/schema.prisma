@@ -34,12 +34,14 @@ id                String    @id @default(cuid())
 
 }
 
+
 model Photo {
-  id         String  @id @default(cuid())
-  publicId   String?
-  url        String
-  memberId   String
-  member     Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  id        String  @id @default(cuid())
+  publicId  String?
+  url       String
+  memberId  String
+  member    Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  isMain    Boolean @default(false)
 }
 model Location {
   id        String  @id @default(cuid())
