@@ -35,6 +35,11 @@ export default async function Navigation() {
                 strona główna
               </Link>
             </li>
+            <li>
+              <Link className={style.link} href={`/user/${userId}/chat`}>
+                Czat
+              </Link>
+            </li>
           </ul>
 
           <div className={style.user}>
