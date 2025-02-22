@@ -1,7 +1,7 @@
 import Link from "next/link";
 import style from "./Navigation.module.css";
 import { auth } from "@/auth";
-import { notFound } from "next/navigation";
+
 import { getMemberByUserId } from "@/app/actions/memberActions";
 import Image from "next/image";
 
@@ -33,11 +33,6 @@ export default async function Navigation() {
             <li>
               <Link className={style.link} href={`/`}>
                 strona główna
-              </Link>
-            </li>
-            <li>
-              <Link className={style.link} href={`/user/${userId}/chat`}>
-                Czat
               </Link>
             </li>
           </ul>

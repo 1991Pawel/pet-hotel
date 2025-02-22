@@ -6,3 +6,8 @@
   font-size: 32px;
   margin-bottom: 24px;
 }
+.link {
+  background: #333;
+  color: #fff;
+  padding: 12px;
+}

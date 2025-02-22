@@ -1,7 +1,8 @@
 import { getMemberByUserId } from "@/app/actions/memberActions";
-import styles from "./page.module.css";
+import style from "./page.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function UsersId({
   params: { userId },
@@ -17,12 +18,16 @@ export default async function UsersId({
   }
   return (
     <div>
-      <div className={styles.user}>
-        <h2 className={styles.userName}>{member.name}</h2>
-
+      <div className={style.user}>
+        <h2 className={style.userName}>{member.name}</h2>
+        <li>
+          <Link className={style.link} href={`/user/${userId}/chat`}>
+            Czat
+          </Link>
+        </li>
         {member.photos[0].url && (
           <Image
-            className={styles.image}
+            className={style.image}
             alt={member.name}
             src={member.photos[0].url}
             width={100}

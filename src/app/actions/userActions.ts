@@ -110,8 +110,6 @@ export async function deleteImage(photoId: string) {
 
 export async function setMainImage(photoId: string) {
   try {
-    const userId = await getAuthUserId();
-
     const photo = await prisma.photo.findUnique({
       where: { id: photoId },
       select: { memberId: true },
