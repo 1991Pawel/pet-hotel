@@ -71,3 +71,79 @@ export async function getMessages(recipientId: string) {
     return { status: "error", error: "Something went wrong" };
   }
 }
+
+export async function getInboxMessages() {
+  try {
+    const userId = await getAuthUserId();
+
+    const messages = await prisma.message.findMany({
+      where: {
+        recipientId: userId,
+        recipientDeleted: false,
+        senderDeleted: false,
+      },
+      orderBy: { created: "desc" },
+      select: {
+        id: true,
+        text: true,
+        created: true,
+        dateRead: true,
+        sender: {
+          select: {
+            userId: true,
+            name: true,
+          },
+        },
+        recipient: {
+          select: {
+            userId: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return { status: "success", data: messages };
+  } catch (error) {
+    console.log(error);
+    return { status: "error", error: "Something went wrong" };
+  }
+}
+
+export async function getSentMessages() {
+  try {
+    const userId = await getAuthUserId();
+
+    const messages = await prisma.message.findMany({
+      where: {
+        senderId: userId,
+        recipientDeleted: false,
+        senderDeleted: false,
+      },
+      orderBy: { created: "desc" },
+      select: {
+        id: true,
+        text: true,
+        created: true,
+        dateRead: true,
+        sender: {
+          select: {
+            userId: true,
+            name: true,
+          },
+        },
+        recipient: {
+          select: {
+            userId: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return { status: "success", data: messages };
+  } catch (error) {
+    console.log(error);
+    return { status: "error", error: "Something went wrong" };
+  }
+}

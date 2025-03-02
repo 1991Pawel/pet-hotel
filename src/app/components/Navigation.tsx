@@ -32,7 +32,12 @@ export default async function Navigation() {
           <ul className={style.list}>
             <li>
               <Link className={style.link} href={`/`}>
-                strona główna
+                Strona główna
+              </Link>
+            </li>
+            <li>
+              <Link className={style.link} href={`/messages?container=inbox`}>
+                Wiadomości
               </Link>
             </li>
           </ul>
