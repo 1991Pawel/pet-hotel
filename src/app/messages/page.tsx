@@ -3,6 +3,7 @@ import { getInboxMessages } from "@/app/actions/messageActions";
 import { getSentMessages } from "@/app/actions/messageActions";
 import Link from "next/link";
 import { mapMessageToMessageDto } from "@/lib/mapping";
+import { MessagesTable } from "@/app/components/MessageTable";
 
 export default async function MessagesPage({
   searchParams,
@@ -26,27 +27,7 @@ export default async function MessagesPage({
           Wysłane
         </Link>
       </nav>
-
-      <div className={styles.mailContainer}>
-        <table className={styles.mailTable}>
-          <thead>
-            <tr>
-              <th>Nadawca</th>
-              <th>Wiadomość</th>
-              <th>Data</th>
-            </tr>
-          </thead>
-          <tbody>
-            {messages?.map((msg, index) => (
-              <tr key={index} className={styles.mailRow}>
-                <td>{msg.senderName}</td>
-                <td>{msg.text}</td>
-                <td>{msg.created}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <MessagesTable messages={messages} isOutbox={container === "inbox"} />
     </div>
   );
 }

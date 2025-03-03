@@ -1,0 +1,55 @@
+.mailContainer {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 20px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mailTable {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mailTable th,
+.mailTable td {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: left;
+}
+
+.mailTable th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
+}
+
+.mailRow:hover {
+  background-color: #f1f3f5;
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+.mailRow td {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Responsywność */
+@media (max-width: 600px) {
+  .mailTable th,
+  .mailTable td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+  }
+}
