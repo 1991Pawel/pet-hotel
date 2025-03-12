@@ -19,6 +19,7 @@ export default async function MessagesPage({
 
   return (
     <div className={styles.page}>
+      {JSON.stringify(container)}
       <nav className={styles.navbar}>
         <Link href="/messages?container=inbox" className={styles.link}>
           Odebrane
@@ -27,7 +28,7 @@ export default async function MessagesPage({
           Wysłane
         </Link>
       </nav>
-      <MessagesTable messages={messages} isOutbox={container === "inbox"} />
+      <MessagesTable messages={messages} isOutbox={container === "sent"} />
     </div>
   );
 }
