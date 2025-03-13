@@ -7,7 +7,6 @@ export const MessagesTable = ({ messages, isOutbox }) => {
   const router = useRouter();
 
   const handleDeleteMessage = async (messageId) => {
-    console.log("Deleting message with id: ", messageId);
     await deleteMessage(messageId, isOutbox);
     router.refresh();
   };

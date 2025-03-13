@@ -36,15 +36,21 @@ export async function getMessages(recipientId: string) {
     const messages = await prisma.message.findMany({
       where: {
         OR: [
-          { senderId: recipientId, recipientId: userId, senderDeleted: false },
           {
             senderId: userId,
-            recipientId: recipientId,
+            recipientId,
+            senderDeleted: false,
+          },
+          {
+            senderId: recipientId,
+            recipientId: userId,
             recipientDeleted: false,
           },
         ],
       },
-      orderBy: { created: "asc" },
+      orderBy: {
+        created: "asc",
+      },
       select: {
         id: true,
         text: true,
@@ -80,7 +86,6 @@ export async function getInboxMessages() {
       where: {
         recipientId: userId,
         recipientDeleted: false,
-        senderDeleted: false,
       },
       orderBy: { created: "desc" },
       select: {
@@ -117,7 +122,6 @@ export async function getSentMessages() {
     const messages = await prisma.message.findMany({
       where: {
         senderId: userId,
-        recipientDeleted: false,
         senderDeleted: false,
       },
       orderBy: { created: "desc" },
@@ -147,9 +151,10 @@ export async function getSentMessages() {
     return { status: "error", error: "Something went wrong" };
   }
 }
-
 export async function deleteMessage(messageId: string, isOutbox: boolean) {
   const selector = isOutbox ? "senderDeleted" : "recipientDeleted";
+
+  console.log(selector, "selector");
 
   try {
     const userId = await getAuthUserId();

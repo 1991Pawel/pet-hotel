@@ -10,7 +10,7 @@ export default async function MessagesPage({
 }: {
   searchParams: { container: string };
 }) {
-  const container = searchParams?.container || "inbox";
+  const container = searchParams?.container ?? "inbox";
 
   const messagesData =
     container === "inbox" ? await getInboxMessages() : await getSentMessages();
@@ -20,6 +20,7 @@ export default async function MessagesPage({
   return (
     <div className={styles.page}>
       {JSON.stringify(container)}
+      {JSON.stringify(messages)}
       <nav className={styles.navbar}>
         <Link href="/messages?container=inbox" className={styles.link}>
           Odebrane
