@@ -1,0 +1,35 @@
+.sentMessage {
+  background: #def1c0;
+  align-self: flex-end;
+  padding: 8px;
+  border-radius: 8px;
+  margin: 4px 0;
+  text-align: right;
+}
+
+.receivedMessage {
+  background: #fff;
+  align-self: flex-start;
+  padding: 8px;
+  border-radius: 8px;
+  margin: 4px 0;
+  text-align: left;
+}
+.name {
+  color: #000;
+  font-weight: 900;
+}
+
+.sender {
+  font-weight: bold;
+}
+
+.message {
+  margin: 4px 0;
+  color: black;
+}
+
+.time {
+  font-size: 0.8em;
+  color: gray;
+}

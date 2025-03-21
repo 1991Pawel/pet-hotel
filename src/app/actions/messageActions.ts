@@ -1,7 +1,10 @@
 "use server";
 import { messageSchema, MessageSchema } from "@/lib/schemas/messageSchema";
+import { mapMessageToMessageDto } from "@/lib/mapping";
 import { getAuthUserId } from "./authActions";
 import { prisma } from "@/lib/prisma";
+import { pusherServer } from "@/lib/pusher";
+import { createChatId } from "@/lib/utils";
 
 export async function createMessage(recipientId: string, data: MessageSchema) {
   try {
@@ -22,7 +25,12 @@ export async function createMessage(recipientId: string, data: MessageSchema) {
       },
     });
 
-    return { status: "success", data: message };
+    const messageDto = mapMessageToMessageDto(message);
+    const chatId = createChatId(userId, recipientId);
+
+    await pusherServer.trigger(chatId, "message:new", messageDto);
+
+    return { status: "success", data: messageDto };
   } catch (error) {
     console.log(error);
     return { status: "error", error: "Something went wrong" };
@@ -51,24 +59,7 @@ export async function getMessages(recipientId: string) {
       orderBy: {
         created: "asc",
       },
-      select: {
-        id: true,
-        text: true,
-        created: true,
-        dateRead: true,
-        sender: {
-          select: {
-            userId: true,
-            name: true,
-          },
-        },
-        recipient: {
-          select: {
-            userId: true,
-            name: true,
-          },
-        },
-      },
+      select: messageSelect,
     });
 
     return { status: "success", data: messages };
@@ -88,24 +79,7 @@ export async function getInboxMessages() {
         recipientDeleted: false,
       },
       orderBy: { created: "desc" },
-      select: {
-        id: true,
-        text: true,
-        created: true,
-        dateRead: true,
-        sender: {
-          select: {
-            userId: true,
-            name: true,
-          },
-        },
-        recipient: {
-          select: {
-            userId: true,
-            name: true,
-          },
-        },
-      },
+      select: messageSelect,
     });
 
     return { status: "success", data: messages };
@@ -125,24 +99,7 @@ export async function getSentMessages() {
         senderDeleted: false,
       },
       orderBy: { created: "desc" },
-      select: {
-        id: true,
-        text: true,
-        created: true,
-        dateRead: true,
-        sender: {
-          select: {
-            userId: true,
-            name: true,
-          },
-        },
-        recipient: {
-          select: {
-            userId: true,
-            name: true,
-          },
-        },
-      },
+      select: messageSelect,
     });
 
     return { status: "success", data: messages };
@@ -195,3 +152,22 @@ export async function deleteMessage(messageId: string, isOutbox: boolean) {
     throw error;
   }
 }
+
+const messageSelect = {
+  id: true,
+  text: true,
+  created: true,
+  dateRead: true,
+  sender: {
+    select: {
+      userId: true,
+      name: true,
+    },
+  },
+  recipient: {
+    select: {
+      userId: true,
+      name: true,
+    },
+  },
+};

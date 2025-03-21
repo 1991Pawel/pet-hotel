@@ -6,3 +6,7 @@ export function assertString(
     throw new Error(errorMessage);
   }
 }
+
+export function createChatId(a: string, b: string): string {
+  return a < b ? `${a}-${b}` : `${b}-${a}`;
+}

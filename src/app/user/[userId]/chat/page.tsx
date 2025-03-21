@@ -1,37 +1,32 @@
 import ChatForm from "@/app/components/ChatForm";
 import { mapMessageToMessageDto } from "@/lib/mapping";
+import MessageList from "@/app/components/MessageList";
 
 import styles from "./page.module.css";
 import { getMessages } from "@/app/actions/messageActions";
-export default async function ChatPage({
-  params: { userId },
-}: {
-  params: {
-    userId: string;
-  };
-}) {
-  const recipmentId = userId;
+import { createChatId } from "@/lib/utils";
+import { getAuthUserId } from "@/app/actions/authActions";
 
-  const messagesData = await getMessages(recipmentId);
+export default async function ChatPage({
+  params,
+}: {
+  params: { userId: string };
+}) {
+  // const recipientId = userId;
+  const userId = await getAuthUserId();
+  const chatId = createChatId(userId, params.userId);
+
+  const messagesData = await getMessages(params.userId);
   const messages = messagesData?.data?.map(mapMessageToMessageDto);
 
   return (
     <div className={styles.messageContainer}>
       <div className={styles.messageContainer}>
-        {messages?.map((msg, index) => (
-          <div
-            key={index}
-            className={
-              msg.senderId === recipmentId
-                ? styles.sentMessage
-                : styles.receivedMessage
-            }
-          >
-            <p className={styles.name}>{msg.senderName}</p>
-            <p className={styles.message}>{msg.text}</p>
-            <p className={styles.time}>{msg.created}</p>
-          </div>
-        ))}
+        <MessageList
+          chatId={chatId}
+          recipientId={params.userId}
+          initialMessages={messages}
+        />
       </div>
       <ChatForm />
     </div>
