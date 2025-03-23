@@ -21,8 +21,6 @@ export async function updateMember(data: EditSchema) {
     }
     const { name, location, coordinates } = validate.data;
 
-    console.log(data, "validate.data");
-
     const memberData = await prisma.member.update({
       where: { userId },
       data: {
@@ -118,8 +116,6 @@ export async function setMainImage(photoId: string) {
     if (!photo) {
       throw new Error("Zdjęcie nie istnieje.");
     }
-
-    console.log(photo.memberId, "phmemberIdmemberIdmemberIdmemberIdoto");
 
     await prisma.photo.updateMany({
       where: { memberId: photo.memberId },

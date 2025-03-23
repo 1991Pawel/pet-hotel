@@ -12,11 +12,11 @@ export default async function ChatPage({
 }: {
   params: { userId: string };
 }) {
-  // const recipientId = userId;
+  const recipientId = params?.userId;
   const userId = await getAuthUserId();
-  const chatId = createChatId(userId, params.userId);
+  const chatId = createChatId(userId, recipientId);
 
-  const messagesData = await getMessages(params.userId);
+  const messagesData = await getMessages(recipientId);
   const messages = messagesData?.data?.map(mapMessageToMessageDto);
 
   return (
@@ -24,7 +24,7 @@ export default async function ChatPage({
       <div className={styles.messageContainer}>
         <MessageList
           chatId={chatId}
-          recipientId={params.userId}
+          recipientId={recipientId}
           initialMessages={messages}
         />
       </div>

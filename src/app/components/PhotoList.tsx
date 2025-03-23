@@ -31,7 +31,6 @@ export default function PhotoList({ photos }: { photos: Photo[] }) {
     }
   };
 
-  console.log(photos);
   return (
     <div>
       {photos.map((photo) => (

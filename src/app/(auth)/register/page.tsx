@@ -26,7 +26,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterSchema) => {
     const result = await registerUser(data);
-    console.log(data, "data");
+
     if (result.status === "error") {
       alert(result.error);
     }

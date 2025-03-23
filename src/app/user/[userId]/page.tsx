@@ -5,12 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function UsersId({
-  params: { userId },
+  params,
 }: {
   params: {
     userId: string;
   };
 }) {
+  const { userId } = await params;
+  if (!userId) {
+    return notFound();
+  }
   const member = await getMemberByUserId(userId);
 
   if (!member) {
