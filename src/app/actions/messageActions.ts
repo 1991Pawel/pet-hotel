@@ -62,6 +62,19 @@ export async function getMessages(recipientId: string) {
       select: messageSelect,
     });
 
+    if (messages.length > 0) {
+      await prisma.message.updateMany({
+        where: {
+          senderId: recipientId,
+          recipientId: userId,
+          dateRead: null,
+        },
+        data: {
+          dateRead: new Date(),
+        },
+      });
+    }
+
     return { status: "success", data: messages };
   } catch (error) {
     console.log(error);
