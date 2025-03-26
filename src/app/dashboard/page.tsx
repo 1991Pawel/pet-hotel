@@ -20,9 +20,6 @@ export default async function Dashboard() {
           </div>
         </div>
       )}
-      <h2 className="text-2xl font-semibold text-blue-500 text-center mt-6 p-4 border-2 border-dashed border-gray-400 rounded-lg shadow-lg">
-        Test Header with Tailwind Styles
-      </h2>
     </div>
   );
 }
