@@ -1,40 +1,19 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginSchema } from "@/lib/schemas/loginSchema";
-import { signInUser } from "@/app/actions/authActions";
-import { useRouter } from "next/navigation";
+import { Tabs, TabsList, TabsTrigger } from "@/app/components/Tabs";
+import { LoginForm } from "@/app/components/forms/LoginForm";
+
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
-  });
-  const router = useRouter();
-
-  const onSubmit = async (data: LoginSchema) => {
-    const result = await signInUser(data);
-    if (result.status === "success") {
-      router.push("/dashboard");
-    }
-  };
-
   return (
     <div>
-      <h2>Login</h2>
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input {...register("email")} type="email" id="email" />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input {...register("password")} type="password" id="password" />
-        </div>
-
-        <button onClick={handleSubmit(onSubmit)} type="submit">
-          Log In
-        </button>
-      </form>
+      <h2>Register</h2>
+      <Tabs defaultValue="account" className="">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="account">Właściciel pupila</TabsTrigger>
+          <TabsTrigger value="password">Właściciel hotelu</TabsTrigger>
+        </TabsList>
+        <LoginForm />
+      </Tabs>
     </div>
   );
 }

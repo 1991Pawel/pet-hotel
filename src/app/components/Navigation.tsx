@@ -13,7 +13,7 @@ const links = [
     label: "Logowanie",
   },
   {
-    href: "/register",
+    href: "/register/pet-owner",
     label: "Rejestracja",
   },
 ];
