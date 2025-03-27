@@ -8,6 +8,7 @@ import { Label } from "@/app/components/Label";
 import { Button } from "@/app/components/Button";
 import { Checkbox } from "@/app/components/Checkbox";
 import Geocoder from "@/app/components/Geocoder";
+import { InputErrorMessage } from "@/app/components/InputErrorMessage";
 
 export default function RegisterPetOwnerForm() {
   const {
@@ -47,18 +48,33 @@ export default function RegisterPetOwnerForm() {
   };
 
   return (
-    <form noValidate className="form" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="flex flex-col gap-4"
+      noValidate
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div>
-        <Label htmlFor="email">Email:</Label>
+        <Label className="mb-2" htmlFor="email">
+          Email:
+        </Label>
         <Input {...register("email")} type="email" id="email" />
-        {errors.email && <p>{errors.email.message}</p>}
+
+        {errors.email && (
+          <InputErrorMessage errorMessage={errors.email.message} />
+        )}
       </div>
 
       <div>
-        <Label htmlFor="password">Password:</Label>
+        <Label className="mb-2" htmlFor="password">
+          Password:
+        </Label>
         <Input {...register("password")} type="password" id="password" />
-        {errors.password && <p>{errors.password.message}</p>}
+
+        {errors.password && (
+          <InputErrorMessage errorMessage={errors.password.message} />
+        )}
       </div>
+
       <div>
         <Controller
           name="location"
@@ -70,7 +86,6 @@ export default function RegisterPetOwnerForm() {
         {errors.location && <p>{errors.location.message}</p>}
       </div>
 
-      <br />
       <div className="flex items-center space-x-2">
         <Checkbox id="terms" />
         <label
@@ -80,7 +95,7 @@ export default function RegisterPetOwnerForm() {
           Accept terms and conditions
         </label>
       </div>
-      <br />
+
       <Button type="submit">Log In</Button>
     </form>
   );

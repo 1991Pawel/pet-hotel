@@ -1,9 +1,7 @@
-// /app/register/[type]/page.tsx
-
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Tabs, TabsList, TabsContent } from "@/app/components/Tabs";
-import clsx from "clsx"; // jeśli używasz clsx (polecane)
+
+import clsx from "clsx";
 import RegisterHotelOwnerForm from "@/app/components/forms/RegisterHotelOwnerForm";
 import RegisterPetOwnerForm from "@/app/components/forms/RegisterPetOwnerForm";
 import { USER_TYPES } from "@/lib/constans";
@@ -23,41 +21,33 @@ export default async function RegisterPage({
     {
       key: USER_TYPES.PET_OWNER,
       label: "Właściciel zwierząt",
-      Component: RegisterPetOwnerForm,
     },
     {
       key: USER_TYPES.HOTEL_OWNER,
       label: "Właściciel hotelu",
-      Component: RegisterHotelOwnerForm,
     },
   ];
 
   return (
-    <div>
-      <Tabs value={type}>
-        <TabsList className="grid w-full grid-cols-2">
-          {TABS.map(({ key, label }) => (
-            <Link
-              key={key}
-              href={`/register/${key}`}
-              className={clsx(
-                "px-4 py-2 text-center rounded-md border transition",
-                key === type
-                  ? "bg-primary text-white border-primary"
-                  : "bg-muted text-muted-foreground hover:bg-accent"
-              )}
-            >
-              {label}
-            </Link>
-          ))}
-        </TabsList>
-
-        {TABS.map(({ key, Component }) => (
-          <TabsContent key={key} value={key}>
-            <Component />
-          </TabsContent>
+    <div className="container mx-auto p-6 flex flex-col gap-4">
+      <div className="flex gap-2">
+        {TABS.map(({ key, label }) => (
+          <Link
+            key={key}
+            href={`/register/${key}`}
+            className={clsx(
+              "text-center  h-full w-full p-2 rounded-md cursor-pointer",
+              key === type ? "bg-black text-white" : "bg-gray-200"
+            )}
+          >
+            {label}
+          </Link>
         ))}
-      </Tabs>
+      </div>
+      <div>
+        {USER_TYPES.PET_OWNER === type && <RegisterPetOwnerForm />}
+        {USER_TYPES.HOTEL_OWNER === type && <RegisterHotelOwnerForm />}
+      </div>
     </div>
   );
 }
