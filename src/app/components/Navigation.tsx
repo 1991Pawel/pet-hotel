@@ -1,6 +1,7 @@
 import Link from "next/link";
 import style from "./Navigation.module.css";
 import { auth } from "@/auth";
+import { Button } from "@/app/components/Button";
 
 import { getMemberByUserId } from "@/app/actions/memberActions";
 import Image from "next/image";
@@ -31,14 +32,14 @@ export default async function Navigation() {
         <div className={style.auth}>
           <ul className={style.list}>
             <li>
-              <Link className={style.link} href={`/`}>
-                Strona główna
-              </Link>
+              <Button asChild>
+                <Link href={`/`}>Strona główna</Link>
+              </Button>
             </li>
             <li>
-              <Link className={style.link} href={`/messages?container=inbox`}>
-                Wiadomości
-              </Link>
+              <Button asChild>
+                <Link href={`/messages?container=inbox`}> Wiadomości</Link>
+              </Button>
             </li>
           </ul>
 
@@ -63,9 +64,11 @@ export default async function Navigation() {
         <ul className={style.list}>
           {links.map((link) => (
             <li key={link.href} className={style.listItem}>
-              <Link className={style.link} href={link.href}>
-                {link.label}
-              </Link>
+              <Button asChild>
+                <Link className={style.link} href={link.href}>
+                  {link.label}
+                </Link>
+              </Button>
             </li>
           ))}
         </ul>
