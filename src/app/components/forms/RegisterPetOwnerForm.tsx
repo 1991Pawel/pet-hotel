@@ -68,8 +68,6 @@ export default function RegisterPetOwnerForm() {
     setValue("coordinates", coordinates);
   };
 
-  console.log(errors, "errors");
-
   return (
     <form
       className="flex flex-col gap-4"
@@ -187,7 +185,7 @@ export default function RegisterPetOwnerForm() {
       {errors.privacyPolicy && (
         <InputErrorMessage errorMessage={errors.privacyPolicy.message} />
       )}
-      <Button type="submit">Log In</Button>
+      <Button type="submit">Zarejestruj się jako właściciel pupila</Button>
       <Link className=" text-center underline" href="/login">
         Masz już konto? Zaloguj się
       </Link>

@@ -1,19 +1,10 @@
-"use client";
-
-import { Tabs, TabsList, TabsTrigger } from "@/app/components/Tabs";
-import { LoginForm } from "@/app/components/forms/LoginForm";
+import LoginForm from "@/app/components/forms/LoginForm";
 
 export default function LoginPage() {
   return (
-    <div>
-      <h2>Register</h2>
-      <Tabs defaultValue="account" className="">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="account">Właściciel pupila</TabsTrigger>
-          <TabsTrigger value="password">Właściciel hotelu</TabsTrigger>
-        </TabsList>
-        <LoginForm />
-      </Tabs>
+    <div className="container mx-auto p-6 flex flex-col gap-4">
+      <h2 className="text-center text-2xl font-semibold">Witaj ponownie!</h2>
+      <LoginForm />
     </div>
   );
 }

@@ -6,7 +6,7 @@ export async function POST(req: Request) {
 
     const mapboxUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
       query
-    )}.json?access_token=${mapboxToken}&autocomplete=true&limit=5&country=PL&language=pl&types=locality,address`;
+    )}.json?access_token=${mapboxToken}&autocomplete=true&limit=5&country=PL&language=pl&types=place`;
 
     const response = await fetch(mapboxUrl);
 

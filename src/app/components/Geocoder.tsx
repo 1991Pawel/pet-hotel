@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import styles from "./Geocoder.module.css";
+import { Label } from "@/app/components/Label";
+import { Input } from "@/app/components/Input";
 
 type Feature = {
   place_name: string;
@@ -56,14 +58,15 @@ const Geocoder = ({ value, onChange, onLocationSelect }: GeocoderProps) => {
 
   return (
     <>
-      <label htmlFor="location">Adres</label>
-      <input
+      <Label className="mb-2" htmlFor="location">
+        Miasto zamieszkania
+      </Label>
+      <Input
         id="location"
         type="text"
-        placeholder="Wprowadź adres"
+        placeholder="Wprowadź miasto"
         value={value}
         onChange={handleInputChange}
-        className={styles.input}
       />
 
       {suggestions.length > 0 && (
