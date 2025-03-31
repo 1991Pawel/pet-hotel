@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-
+import { ChevronLeft } from "lucide-react";
 import clsx from "clsx";
 import RegisterHotelOwnerForm from "@/app/components/forms/RegisterHotelOwnerForm";
 import RegisterPetOwnerForm from "@/app/components/forms/RegisterPetOwnerForm";
 import { USER_TYPES } from "@/lib/constans";
+import { Button } from "@/app/components/Button";
 
 export default async function RegisterPage({
   params,
@@ -30,6 +31,17 @@ export default async function RegisterPage({
 
   return (
     <div className="container mx-auto p-6 flex flex-col gap-4">
+      <h1 className="text-center text-2xl font-semibold">Rejestracja</h1>
+      <Button
+        asChild
+        variant="link"
+        className="cursor-pointer  justify-start w-fit ml-[-14px]"
+      >
+        <Link href="/">
+          <ChevronLeft />
+          Wróć na stronę główną
+        </Link>
+      </Button>
       <div className="flex gap-2">
         {TABS.map(({ key, label }) => (
           <Link
