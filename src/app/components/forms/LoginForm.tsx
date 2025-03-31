@@ -8,7 +8,9 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
 import { Button } from "@/app/components/Button";
-
+import { Toaster } from "@/app/components/Sonner";
+import { toast } from "sonner";
+import Link from "next/link";
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -19,6 +21,10 @@ export default function LoginForm() {
     const result = await signInUser(data);
     if (result.status === "success") {
       router.push("/dashboard");
+    } else if (result.status === "error") {
+      toast.error("Wrong credential", {
+        description: "Please check your email and password and try again.",
+      });
     }
   };
 
@@ -34,6 +40,7 @@ export default function LoginForm() {
         </Label>
         <Input {...register("email")} type="email" id="email" />
       </div>
+
       <div>
         <Label className="mb-2" htmlFor="password">
           Password:
@@ -44,6 +51,7 @@ export default function LoginForm() {
       <Button onClick={handleSubmit(onSubmit)} type="submit">
         Zaloguj się
       </Button>
+      <Toaster />
     </form>
   );
 }

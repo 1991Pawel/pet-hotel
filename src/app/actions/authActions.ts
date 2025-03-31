@@ -13,10 +13,9 @@ export async function signInUser(data: LoginSchema) {
       password: data.password,
       redirect: false,
     });
-    console.log(result);
-    return { status: "success" };
+
+    return { status: "success", result };
   } catch (error) {
-    console.log(error);
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":

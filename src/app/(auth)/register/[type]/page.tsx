@@ -48,6 +48,9 @@ export default async function RegisterPage({
         {USER_TYPES.PET_OWNER === type && <RegisterPetOwnerForm />}
         {USER_TYPES.HOTEL_OWNER === type && <RegisterHotelOwnerForm />}
       </div>
+      <Link className=" text-center underline" href="/login">
+        Masz już konto? Zaloguj się
+      </Link>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { Button } from "@/app/components/Button";
 import { Checkbox } from "@/app/components/Checkbox";
 import Geocoder from "@/app/components/Geocoder";
 import { InputErrorMessage } from "@/app/components/InputErrorMessage";
-import Link from "next/link";
+
 import { getCheckboxGroupStatus } from "@/lib/utils";
 
 export default function RegisterPetOwnerForm() {
@@ -186,9 +186,6 @@ export default function RegisterPetOwnerForm() {
         <InputErrorMessage errorMessage={errors.privacyPolicy.message} />
       )}
       <Button type="submit">Zarejestruj się jako petsitter</Button>
-      <Link className=" text-center underline" href="/login">
-        Masz już konto? Zaloguj się
-      </Link>
     </form>
   );
 }

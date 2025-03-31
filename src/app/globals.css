@@ -121,3 +121,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+.toaster [data-sonner-toast][data-type="error"] {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-left: 2px solid #dc2626;
+}
+
+.toaster [data-sonner-toast][data-type="error"] div {
+  color: #000;
+}

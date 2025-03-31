@@ -65,9 +65,7 @@ export default async function Navigation() {
           {links.map((link) => (
             <li key={link.href} className={style.listItem}>
               <Button asChild>
-                <Link className={style.link} href={link.href}>
-                  {link.label}
-                </Link>
+                <Link href={link.href}>{link.label}</Link>
               </Button>
             </li>
           ))}
