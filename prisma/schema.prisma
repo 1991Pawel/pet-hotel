@@ -70,48 +70,50 @@ datasource db {
 
 
 model User {
-  id           String   @id @default(cuid())
-  email        String?
-  passwordHash String?
+  id                 String    @id @default(cuid())
+  email              String?
+  passwordHash       String?
 
-  petOwner     PetOwner?
-  hotelOwner   HotelOwner?
+  petOwner           PetOwner?
+  hotelOwner         HotelOwner?
 
-  senderMessages    Message[] @relation("sender")
-  recipientMessages Message[] @relation("recipient")
+  senderMessages     Message[] @relation("sender")
+  recipientMessages  Message[] @relation("recipient")
 }
 
 model PetOwner {
-  id                String    @id @default(cuid())
-  userId            String    @unique
-  name              String
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  photos            Photo[]
-    location  Location[]
-  reviews           Review[]
+  id          String     @id @default(cuid())
+  userId      String     @unique
+  name        String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photos      Photo[]
+  location    Location?  @relation("PetOwnerLocation")
+  reviews     Review[]
 }
 
 model HotelOwner {
-  id                String    @id @default(cuid())
-  userId            String    @unique
-  name              String
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  photos            Photo[]
-    location  Location[]
-  reviews           Review[]
+  id          String     @id @default(cuid())
+  userId      String     @unique
+  name        String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photos      Photo[]
+  location    Location?  @relation("HotelOwnerLocation")
+  reviews     Review[]
 }
 
-model Review {
-  id           String      @id @default(cuid())
-  content      String
-  rating       Int
-  hotelOwnerId String
-  petOwnerId   String
+model Location {
+  id            String       @id @default(cuid())
+  city          String
+  postalCode    String?
+  street        String?
+  latitude      Float?
+  longitude     Float?
 
-  hotelOwner   HotelOwner  @relation(fields: [hotelOwnerId], references: [id], onDelete: Cascade)
-  petOwner     PetOwner    @relation(fields: [petOwnerId], references: [id], onDelete: Cascade)
-  createdAt    DateTime    @default(now())
+  petOwnerId    String?      @unique
+  petOwner      PetOwner?    @relation("PetOwnerLocation", fields: [petOwnerId], references: [id], onDelete: Cascade)
+
+  hotelOwnerId  String?      @unique
+  hotelOwner    HotelOwner?  @relation("HotelOwnerLocation", fields: [hotelOwnerId], references: [id], onDelete: Cascade)
 }
 
 model Photo {
@@ -126,18 +128,16 @@ model Photo {
   petOwner      PetOwner?    @relation(fields: [petOwnerId], references: [id], onDelete: Cascade)
 }
 
-model Location {
-  id            String       @id @default(cuid())
-  city          String
-  postalCode    String?
-  street        String?
-  latitude      Float?
-  longitude     Float?
+model Review {
+  id           String      @id @default(cuid())
+  content      String
+  rating       Int
+  hotelOwnerId String
+  petOwnerId   String
 
-  hotelOwnerId  String?
-  petOwnerId    String?
-  hotelOwner    HotelOwner?  @relation(fields: [hotelOwnerId], references: [id], onDelete: Cascade)
-  petOwner      PetOwner?    @relation(fields: [petOwnerId], references: [id], onDelete: Cascade)
+  hotelOwner   HotelOwner  @relation(fields: [hotelOwnerId], references: [id], onDelete: Cascade)
+  petOwner     PetOwner    @relation(fields: [petOwnerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime    @default(now())
 }
 
 model Message {

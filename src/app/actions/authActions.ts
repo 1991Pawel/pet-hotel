@@ -100,16 +100,30 @@ export async function registerUser(data: RegisterSchema, type: string) {
         passwordHash: hashedPassword,
         petOwner: {
           create: {
-            name: "",
+            name: "Testowy PetOwner",
             location: {
               create: {
                 city: city,
+                street: "unknown",
+                postalCode: "unknown",
+                latitude: 0.0,
+                longitude: 0.0,
               },
             },
           },
         },
       },
+      include: {
+        petOwner: {
+          include: {
+            location: true,
+          },
+        },
+      },
     });
+
+    return { status: "success", user };
+
     return { status: "success", data, user };
   } catch (error) {
     console.log(error);
