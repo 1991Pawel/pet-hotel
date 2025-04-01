@@ -29,10 +29,10 @@ export default function RegisterPetOwnerForm() {
       email: "",
       password: "",
       confirmPassword: "",
-      location: "",
+      city: "",
       privacyPolicy: false,
       marketingConsent: false,
-      coordinates: [0, 0],
+      // coordinates: [0, 0],
     },
   });
 
@@ -45,7 +45,7 @@ export default function RegisterPetOwnerForm() {
   );
 
   const onSubmit = async (data: RegisterSchema) => {
-    const result = await registerUser(data);
+    const result = await registerUser(data, "PET_OWNER");
     if (result.status === "error") {
       alert(result.error);
     }
@@ -64,7 +64,7 @@ export default function RegisterPetOwnerForm() {
     address: string;
     coordinates: [number, number];
   }) => {
-    setValue("location", address);
+    setValue("city", address);
     setValue("coordinates", coordinates);
   };
 
@@ -112,15 +112,15 @@ export default function RegisterPetOwnerForm() {
 
       <div>
         <Controller
-          name="location"
+          name="city"
           control={control}
           render={({ field }) => (
             <Geocoder {...field} onLocationSelect={handleLocationSelect} />
           )}
         />
 
-        {errors.location && (
-          <InputErrorMessage errorMessage={errors.location.message} />
+        {errors.city && (
+          <InputErrorMessage errorMessage={errors.city.message} />
         )}
       </div>
 

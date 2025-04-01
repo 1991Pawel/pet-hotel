@@ -39,37 +39,72 @@ export async function getUserByEmail(email: string) {
 }
 
 ///54m-type
-export async function registerUser(data: RegisterSchema) {
+export async function registerUser(data: RegisterSchema, type: string) {
   try {
     const validated = registerSchema.safeParse(data);
     if (!validated.success) {
       return { status: "error", error: validated.error.errors };
     }
     // Tylko w przypadku sukcesu możemy bezpiecznie odczytać dane
-    const { email, password, location, coordinates } = validated.data;
+    const { email, password, city } = validated.data;
     const hashedPassword = await bycrypt.hash(password, 10);
     const existingUser = await getUserByEmail(data.email);
 
-    console.log(coordinates, "coordinates");
     if (existingUser) {
       return { status: "error", error: "User already exists" };
     }
-    const user = await prisma.user.create({
-      data: {
-        email: email,
-        passwordHash: hashedPassword,
 
-        member: {
+    let roleFields = {};
+
+    if (type === "PET_OWNER") {
+      roleFields = {
+        petOwner: {
           create: {
             name: "",
             location: {
-              create: [
-                {
-                  address: location,
-                  longitude: coordinates[1],
-                  latitude: coordinates[0],
-                },
-              ],
+              create: {
+                city: city,
+                street: "unknown",
+                postalCode: "unknown",
+                latitude: 0.0,
+                longitude: 0.0,
+              },
+            },
+          },
+        },
+      };
+    } else if (type === "hotelOwner") {
+      roleFields = {
+        hotelOwner: {
+          create: {
+            name: "",
+            location: {
+              create: {
+                city: city,
+                street: "unknown",
+                postalCode: "unknown",
+                latitude: 0,
+                longitude: 0,
+              },
+            },
+          },
+        },
+      };
+    } else {
+      return { status: "error", error: "Invalid user type" };
+    }
+
+    const user = await prisma.user.create({
+      data: {
+        email,
+        passwordHash: hashedPassword,
+        petOwner: {
+          create: {
+            name: "",
+            location: {
+              create: {
+                city: city,
+              },
             },
           },
         },

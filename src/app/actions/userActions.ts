@@ -6,6 +6,8 @@ import { EditSchema, editSchema } from "@/lib/schemas/editSchema";
 import { getMemberByUserId } from "./memberActions";
 import { cloudinary } from "@/lib/cloudinary";
 
+// export async function createUser(data: RegisterSchema) {}
+
 export async function updateMember(data: EditSchema) {
   try {
     const userId = await getAuthUserId();

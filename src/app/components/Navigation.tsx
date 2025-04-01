@@ -22,9 +22,9 @@ const links = [
 export default async function Navigation() {
   const session = await auth();
   const userId = session?.user?.id || "";
-  const member = await getMemberByUserId(userId);
-  const memberPhotos = member?.photos ?? [];
-  const memberMainPhoto = memberPhotos.find((photo) => photo.isMain);
+  // const member = await getMemberByUserId(userId);
+  // const memberPhotos = member?.photos ?? [];
+  // const memberMainPhoto = memberPhotos.find((photo) => photo.isMain);
 
   return (
     <nav className={style.navigation}>
@@ -45,7 +45,7 @@ export default async function Navigation() {
 
           <div className={style.user}>
             <LogoutButton />
-            <Link href={`/user/${userId}/edit-profil`}>
+            {/* <Link href={`/user/${userId}/edit-profil`}>
               <div className={style.avatar}>
                 <Image
                   src={
@@ -57,7 +57,7 @@ export default async function Navigation() {
                   alt="avatar"
                 />
               </div>
-            </Link>
+            </Link> */}
           </div>
         </div>
       ) : (
