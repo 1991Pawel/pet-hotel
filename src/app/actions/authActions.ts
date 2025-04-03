@@ -5,7 +5,7 @@ import { RegisterSchema, registerSchema } from "@/lib/schemas/registerSchema";
 import { LoginSchema } from "@/lib/schemas/loginSchema";
 import bycrypt from "bcryptjs";
 import { AuthError } from "next-auth";
-
+import { USER_TYPES } from "@/lib/constans";
 export async function signInUser(data: LoginSchema) {
   try {
     const result = await signIn("credentials", {
@@ -56,35 +56,25 @@ export async function registerUser(data: RegisterSchema, type: string) {
 
     let roleFields = {};
 
-    if (type === "PET_OWNER") {
+    if (USER_TYPES.PET_OWNER === type) {
       roleFields = {
         petOwner: {
           create: {
-            name: "",
             location: {
               create: {
                 city: city,
-                street: "unknown",
-                postalCode: "unknown",
-                latitude: 0.0,
-                longitude: 0.0,
               },
             },
           },
         },
       };
-    } else if (type === "hotelOwner") {
+    } else if (USER_TYPES.HOTEL_OWNER === type) {
       roleFields = {
         hotelOwner: {
           create: {
-            name: "",
             location: {
               create: {
                 city: city,
-                street: "unknown",
-                postalCode: "unknown",
-                latitude: 0,
-                longitude: 0,
               },
             },
           },
@@ -98,27 +88,7 @@ export async function registerUser(data: RegisterSchema, type: string) {
       data: {
         email,
         passwordHash: hashedPassword,
-        petOwner: {
-          create: {
-            name: "Testowy PetOwner",
-            location: {
-              create: {
-                city: city,
-                street: "unknown",
-                postalCode: "unknown",
-                latitude: 0.0,
-                longitude: 0.0,
-              },
-            },
-          },
-        },
-      },
-      include: {
-        petOwner: {
-          include: {
-            location: true,
-          },
-        },
+        ...roleFields,
       },
     });
 

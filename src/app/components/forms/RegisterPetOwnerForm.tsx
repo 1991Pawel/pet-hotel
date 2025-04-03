@@ -10,11 +10,13 @@ import { Button } from "@/app/components/Button";
 import { Checkbox } from "@/app/components/Checkbox";
 import Geocoder from "@/app/components/Geocoder";
 import { InputErrorMessage } from "@/app/components/InputErrorMessage";
-
+import { USER_TYPES } from "@/lib/constans";
 import { getCheckboxGroupStatus } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function RegisterPetOwnerForm() {
   const [, setAcceptAllTerms] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -45,9 +47,17 @@ export default function RegisterPetOwnerForm() {
   );
 
   const onSubmit = async (data: RegisterSchema) => {
-    const result = await registerUser(data, "PET_OWNER");
+    const result = await registerUser(data, USER_TYPES.PET_OWNER);
+    console.log(result.status, "status");
     if (result.status === "error") {
-      alert(result.error);
+      toast.error("Coś poszło nie tak.", {
+        description: "Spróbuj ponownie.",
+      });
+    }
+    if (result.status === "success") {
+      toast.success("Konto zostało stworzone", {
+        description: "Zaloguj się do swojego konta.",
+      });
     }
   };
 
@@ -185,6 +195,7 @@ export default function RegisterPetOwnerForm() {
       {errors.privacyPolicy && (
         <InputErrorMessage errorMessage={errors.privacyPolicy.message} />
       )}
+
       <Button type="submit">Zarejestruj się jako właściciel pupila</Button>
     </form>
   );

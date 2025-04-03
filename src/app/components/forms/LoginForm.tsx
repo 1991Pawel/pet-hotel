@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
 import { Button } from "@/app/components/Button";
-import { Toaster } from "@/app/components/Sonner";
 import { toast } from "sonner";
 import Link from "next/link";
 export default function LoginForm() {
@@ -22,8 +21,8 @@ export default function LoginForm() {
     if (result.status === "success") {
       router.push("/dashboard");
     } else if (result.status === "error") {
-      toast.error("Wrong credential", {
-        description: "Please check your email and password and try again.",
+      toast.error("Coś poszło nie tak. ", {
+        description: "Sprawdź swoje dane logowania.",
       });
     }
   };
@@ -51,7 +50,6 @@ export default function LoginForm() {
       <Button onClick={handleSubmit(onSubmit)} type="submit">
         Zaloguj się
       </Button>
-      <Toaster />
     </form>
   );
 }

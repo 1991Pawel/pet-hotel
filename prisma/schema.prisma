@@ -15,68 +15,14 @@ datasource db {
 
 
 
-// model User {
-//   id           String   @id @default(cuid())
-//   email        String?
-//   passwordHash String?
-//   member       Member?
-//   role         String   @default("USER")
-
-// }
-
-// model Member {
-// id                String    @id @default(cuid())
-//   userId            String    @unique
-//   name              String
-//   photos            Photo[]
-//     location  Location[]
-//   user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     senderMessages    Message[] @relation("sender")
-//   recipientMessages Message[] @relation("recipient")
-
-// }
-
-
-// model Photo {
-//   id        String  @id @default(cuid())
-//   publicId  String?
-//   url       String
-//   memberId  String
-//   member    Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
-//   isMain    Boolean @default(false)
-// }
-// model Location {
-//   id        String  @id @default(cuid())
-//   memberId  String
-//   address   String 
-//   latitude  Float  
-//   longitude Float  
-//   member    Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
-// }
-
-
-// model Message {
-//   id               String    @id @default(cuid())
-//   text             String
-//   created          DateTime  @default(now())
-//   senderId         String?
-//   recipientId      String?
-//   sender           Member?   @relation("sender", fields: [senderId], references: [userId], onDelete: SetNull)
-//   recipient        Member?   @relation("recipient", fields: [recipientId], references: [userId], onDelete: SetNull)
-//   dateRead         DateTime?
-//   senderDeleted    Boolean   @default(false)
-//   recipientDeleted Boolean   @default(false)
-// }
 
 
 model User {
   id                 String    @id @default(cuid())
   email              String?
   passwordHash       String?
-
   petOwner           PetOwner?
   hotelOwner         HotelOwner?
-
   senderMessages     Message[] @relation("sender")
   recipientMessages  Message[] @relation("recipient")
 }
@@ -84,7 +30,7 @@ model User {
 model PetOwner {
   id          String     @id @default(cuid())
   userId      String     @unique
-  name        String
+  name        String?
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   photos      Photo[]
   location    Location?  @relation("PetOwnerLocation")
@@ -94,7 +40,7 @@ model PetOwner {
 model HotelOwner {
   id          String     @id @default(cuid())
   userId      String     @unique
-  name        String
+  name        String?
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   photos      Photo[]
   location    Location?  @relation("HotelOwnerLocation")
