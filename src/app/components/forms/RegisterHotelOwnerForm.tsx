@@ -10,11 +10,14 @@ import { Button } from "@/app/components/Button";
 import { Checkbox } from "@/app/components/Checkbox";
 import Geocoder from "@/app/components/Geocoder";
 import { InputErrorMessage } from "@/app/components/InputErrorMessage";
-
+import { USER_TYPES } from "@/lib/constans";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { getCheckboxGroupStatus } from "@/lib/utils";
 
 export default function RegisterPetOwnerForm() {
   const [, setAcceptAllTerms] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -29,10 +32,10 @@ export default function RegisterPetOwnerForm() {
       email: "",
       password: "",
       confirmPassword: "",
-      location: "",
       privacyPolicy: false,
       marketingConsent: false,
       coordinates: [0, 0],
+      city: "",
     },
   });
 
@@ -45,9 +48,17 @@ export default function RegisterPetOwnerForm() {
   );
 
   const onSubmit = async (data: RegisterSchema) => {
-    const result = await registerUser(data);
+    const result = await registerUser(data, USER_TYPES.HOTEL_OWNER);
     if (result.status === "error") {
-      alert(result.error);
+      toast.error("Coś poszło nie tak.", {
+        description: "Spróbuj ponownie.",
+      });
+    }
+    if (result.status === "success") {
+      toast.success("Konto zostało stworzone", {
+        description: "Zaloguj się do swojego konta.",
+      });
+      router.push("/login");
     }
   };
 
@@ -64,7 +75,7 @@ export default function RegisterPetOwnerForm() {
     address: string;
     coordinates: [number, number];
   }) => {
-    setValue("location", address);
+    setValue("city", address);
     setValue("coordinates", coordinates);
   };
 
@@ -112,15 +123,15 @@ export default function RegisterPetOwnerForm() {
 
       <div>
         <Controller
-          name="location"
+          name="city"
           control={control}
           render={({ field }) => (
             <Geocoder {...field} onLocationSelect={handleLocationSelect} />
           )}
         />
 
-        {errors.location && (
-          <InputErrorMessage errorMessage={errors.location.message} />
+        {errors.city && (
+          <InputErrorMessage errorMessage={errors.city.message} />
         )}
       </div>
 

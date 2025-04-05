@@ -13,9 +13,11 @@ import { InputErrorMessage } from "@/app/components/InputErrorMessage";
 import { USER_TYPES } from "@/lib/constans";
 import { getCheckboxGroupStatus } from "@/lib/utils";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPetOwnerForm() {
   const [, setAcceptAllTerms] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -34,7 +36,7 @@ export default function RegisterPetOwnerForm() {
       city: "",
       privacyPolicy: false,
       marketingConsent: false,
-      // coordinates: [0, 0],
+      coordinates: [0, 0],
     },
   });
 
@@ -49,6 +51,7 @@ export default function RegisterPetOwnerForm() {
   const onSubmit = async (data: RegisterSchema) => {
     const result = await registerUser(data, USER_TYPES.PET_OWNER);
     console.log(result.status, "status");
+    console.log(data, "d");
     if (result.status === "error") {
       toast.error("Coś poszło nie tak.", {
         description: "Spróbuj ponownie.",
@@ -58,6 +61,7 @@ export default function RegisterPetOwnerForm() {
       toast.success("Konto zostało stworzone", {
         description: "Zaloguj się do swojego konta.",
       });
+      router.push("/login");
     }
   };
 

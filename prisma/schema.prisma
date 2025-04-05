@@ -80,7 +80,6 @@ model Review {
   rating       Int
   hotelOwnerId String
   petOwnerId   String
-
   hotelOwner   HotelOwner  @relation(fields: [hotelOwnerId], references: [id], onDelete: Cascade)
   petOwner     PetOwner    @relation(fields: [petOwnerId], references: [id], onDelete: Cascade)
   createdAt    DateTime    @default(now())

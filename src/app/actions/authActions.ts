@@ -45,7 +45,7 @@ export async function registerUser(data: RegisterSchema, type: string) {
     if (!validated.success) {
       return { status: "error", error: validated.error.errors };
     }
-    // Tylko w przypadku sukcesu możemy bezpiecznie odczytać dane
+
     const { email, password, city } = validated.data;
     const hashedPassword = await bycrypt.hash(password, 10);
     const existingUser = await getUserByEmail(data.email);
@@ -93,8 +93,6 @@ export async function registerUser(data: RegisterSchema, type: string) {
     });
 
     return { status: "success", user };
-
-    return { status: "success", data, user };
   } catch (error) {
     console.log(error);
     return { status: "error", error: "Something went wrong" };

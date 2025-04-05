@@ -6,7 +6,7 @@ import { Label } from "@/app/components/Label";
 import { Input } from "@/app/components/Input";
 
 type Feature = {
-  place_name: string;
+  text_pl: string;
   geometry: {
     coordinates: [number, number];
   };
@@ -46,9 +46,9 @@ const Geocoder = ({ value, onChange, onLocationSelect }: GeocoderProps) => {
   };
 
   const handleSuggestionClick = (suggestion: Feature) => {
-    onChange(suggestion.place_name);
+    onChange(suggestion.text_pl);
     onLocationSelect({
-      address: suggestion.place_name,
+      address: suggestion.text_pl,
       coordinates: suggestion.geometry.coordinates,
     });
     setLocationData(null);
@@ -77,7 +77,7 @@ const Geocoder = ({ value, onChange, onLocationSelect }: GeocoderProps) => {
               onClick={() => handleSuggestionClick(suggestion)}
               className={styles.suggestion}
             >
-              {suggestion.place_name}
+              {suggestion.text_pl}
             </li>
           ))}
         </ul>
