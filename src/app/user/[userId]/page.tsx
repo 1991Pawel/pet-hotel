@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ReviewForm from "@/app/components/ReviewForm";
+import { getAuthUserId } from "@/app/actions/authActions";
 
 export default async function UsersId({
   params,
@@ -16,7 +17,10 @@ export default async function UsersId({
   if (!userId) {
     return notFound();
   }
-  const hotel = await getHotelById(userId);
+  const loggedUserId = await getAuthUserId();
+
+  // console.log(loggedUserId, "loggedUserId");
+  const { hotel, canAddReview } = await getHotelById(userId);
 
   if (!hotel) {
     return notFound();
@@ -46,6 +50,8 @@ export default async function UsersId({
           {hotel.reviews && hotel.reviews.length > 0 ? (
             hotel.reviews.map((review, index) => (
               <div key={index} className={style.review}>
+                {review.petOwner.user.id === loggedUserId &&
+                  "moja opinia można edytować"}
                 <p className={style.reviewContent}>{review.content}</p>
                 <p className={style.reviewRating}>Ocena: {review.rating} / 5</p>
               </div>
@@ -54,7 +60,7 @@ export default async function UsersId({
             <p className={style.noReviews}>Brak opinii na razie.</p>
           )}
         </div>
-        <ReviewForm />
+        {canAddReview && <ReviewForm />}
       </div>
     </div>
   );

@@ -1,10 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { getAuthUserId } from "./authActions";
 
 export async function getHotelById(id: string) {
   try {
-    return prisma.hotelOwner.findUnique({
+    const userId = await getAuthUserId();
+
+    const hotel = await prisma.hotelOwner.findUnique({
       where: {
         userId: id,
       },
@@ -19,6 +22,7 @@ export async function getHotelById(id: string) {
               select: {
                 user: {
                   select: {
+                    id: true,
                     email: true,
                   },
                 },
@@ -28,8 +32,27 @@ export async function getHotelById(id: string) {
         },
       },
     });
+
+    if (!hotel) {
+      return { status: "error", error: "Hotel not found." };
+    }
+
+    let canAddReview = false;
+
+    if (userId) {
+      const hasReviewed = hotel.reviews.some(
+        (review) => review.petOwner?.user?.id === userId
+      );
+      canAddReview = !hasReviewed;
+    }
+
+    return {
+      status: "success",
+      hotel,
+      canAddReview,
+    };
   } catch (error) {
-    console.log(error);
-    throw error;
+    console.error(error);
+    return { status: "error", error: "Something went wrong." };
   }
 }

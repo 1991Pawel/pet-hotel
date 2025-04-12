@@ -18,6 +18,7 @@ export async function addReview(review: {
 
     console.log("Review data:", review);
 
+    // Sprawdzenie, czy użytkownik jest właścicielem zwierzęcia (PetOwner)
     const petOwner = await prisma.petOwner.findUnique({
       where: {
         userId: userId,
@@ -30,6 +31,7 @@ export async function addReview(review: {
 
     console.log("Pet Owner found:", petOwner);
 
+    // Sprawdzenie, czy właściciel hotelu (HotelOwner) istnieje
     const hotelOwner = await prisma.hotelOwner.findUnique({
       where: {
         userId: review.hotelOwnerId,
@@ -44,6 +46,19 @@ export async function addReview(review: {
 
     console.log("Hotel Owner found:", hotelOwner);
 
+    // Sprawdzenie, czy użytkownik już dodał recenzję dla tego hotelu
+    const existingReview = await prisma.review.findFirst({
+      where: {
+        petOwnerId: petOwner.id,
+        hotelOwnerId: hotelOwner.id,
+      },
+    });
+
+    if (existingReview) {
+      throw new Error("You have already reviewed this hotel.");
+    }
+
+    // Tworzenie nowej recenzji
     const createdReview = await prisma.review.create({
       data: {
         content: review.content,
