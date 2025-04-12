@@ -4,10 +4,13 @@ import Link from "next/link";
 export type HotelCardProps = {
   hotel: {
     id: string;
-    name: string;
+    name: string | null;
     userId: string;
     rating?: number;
     avgRating: number | null;
+    location: {
+      city: string;
+    } | null;
     photos: {
       url: string;
     }[];
@@ -16,17 +19,13 @@ export type HotelCardProps = {
 
 const HotelCard = ({ hotel }: HotelCardProps) => {
   return (
-    <Link key={hotel?.id} href={`/user/${hotel?.id}`}>
+    <Link key={hotel.userId} href={`/user/${hotel.userId}`}>
       <div className="cursor-pointer">
         <div>
-          {/* Zdjęcie */}
           <div className="relative mb-1 aspect-1/1 ">
             <Image
               alt={hotel.name || "Hotel Piesek"}
-              src={
-                hotel.photos[0]?.url ||
-                "/assets/trash/dog-hotel-placeholder.jpg"
-              }
+              src={"/assets/trash/dog-hotel-placeholder.jpg"}
               fill
               className="object-cover"
             />
@@ -34,7 +33,7 @@ const HotelCard = ({ hotel }: HotelCardProps) => {
 
           <div>
             <div className="flex items-center justify-between text-sm">
-              <h2 className="font-semibold ">{hotel.name || "Hotel Piesek"}</h2>
+              <h2 className="font-semibold ">{hotel.name}</h2>
               <div className="flex items-center">
                 <span className="text-yellow-500">★</span>
                 {hotel.avgRating && (
@@ -44,7 +43,7 @@ const HotelCard = ({ hotel }: HotelCardProps) => {
                 )}
               </div>
             </div>
-            <h3 className="text-sm">warszawa</h3>
+            <h3 className="text-sm">{hotel?.location?.city}</h3>
           </div>
         </div>
       </div>

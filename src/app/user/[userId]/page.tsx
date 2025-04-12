@@ -1,8 +1,9 @@
-import { getMemberByUserId } from "@/app/actions/memberActions";
+import { getHotelById } from "@/app/actions/hotelActions";
 import style from "./page.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import ReviewForm from "@/app/components/ReviewForm";
 
 export default async function UsersId({
   params,
@@ -15,29 +16,45 @@ export default async function UsersId({
   if (!userId) {
     return notFound();
   }
-  const member = await getMemberByUserId(userId);
+  const hotel = await getHotelById(userId);
 
-  if (!member) {
+  if (!hotel) {
     return notFound();
   }
+  console.log(hotel, "hotel");
   return (
     <div>
       <div className={style.user}>
-        <h2 className={style.userName}>{member.name}</h2>
+        <h2 className={style.userName}>{hotel.name}</h2>
         <li>
           <Link className={style.link} href={`/user/${userId}/chat`}>
             Czat
           </Link>
         </li>
-        {member.photos[0].url && (
+        {hotel.photos[0]?.url && (
           <Image
             className={style.image}
-            alt={member.name}
-            src={member.photos[0].url}
+            alt={hotel.name || "Hotel Piesek"}
+            src={hotel.photos[0].url}
             width={100}
             height={100}
           />
         )}
+        {/* Reviews Section */}
+        <div className={style.reviews}>
+          <h3>Opinie gości</h3>
+          {hotel.reviews && hotel.reviews.length > 0 ? (
+            hotel.reviews.map((review, index) => (
+              <div key={index} className={style.review}>
+                <p className={style.reviewContent}>{review.content}</p>
+                <p className={style.reviewRating}>Ocena: {review.rating} / 5</p>
+              </div>
+            ))
+          ) : (
+            <p className={style.noReviews}>Brak opinii na razie.</p>
+          )}
+        </div>
+        <ReviewForm />
       </div>
     </div>
   );
