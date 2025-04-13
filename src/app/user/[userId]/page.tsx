@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ReviewForm from "@/app/components/ReviewForm";
 import { getAuthUserId } from "@/app/actions/authActions";
+import ReviewsList from "@/app/components/ReviewsList";
 
 export default async function UsersId({
   params,
@@ -17,17 +18,17 @@ export default async function UsersId({
   if (!userId) {
     return notFound();
   }
-  const loggedUserId = await getAuthUserId();
+  const loggedUserId = await getAuthUserId({ required: false });
 
-  // console.log(loggedUserId, "loggedUserId");
-  const { hotel, canAddReview } = await getHotelById(userId);
+  const { hotel, canAddReview } = await getHotelById(userId, loggedUserId);
 
   if (!hotel) {
     return notFound();
   }
-  console.log(hotel, "hotel");
+  // console.log(hotel, "hotel");
   return (
     <div>
+      test
       <div className={style.user}>
         <h2 className={style.userName}>{hotel.name}</h2>
         <li>
@@ -44,22 +45,7 @@ export default async function UsersId({
             height={100}
           />
         )}
-        {/* Reviews Section */}
-        <div className={style.reviews}>
-          <h3>Opinie gości</h3>
-          {hotel.reviews && hotel.reviews.length > 0 ? (
-            hotel.reviews.map((review, index) => (
-              <div key={index} className={style.review}>
-                {review.petOwner.user.id === loggedUserId &&
-                  "moja opinia można edytować"}
-                <p className={style.reviewContent}>{review.content}</p>
-                <p className={style.reviewRating}>Ocena: {review.rating} / 5</p>
-              </div>
-            ))
-          ) : (
-            <p className={style.noReviews}>Brak opinii na razie.</p>
-          )}
-        </div>
+        <ReviewsList reviews={hotel.reviews} />
         {canAddReview && <ReviewForm />}
       </div>
     </div>

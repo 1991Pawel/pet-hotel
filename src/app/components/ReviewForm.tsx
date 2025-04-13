@@ -20,8 +20,6 @@ export default function ReviewForm() {
   const params = useParams<{ userId: string }>();
 
   const onSubmit = async (data: ReviewSchema) => {
-    console.log(data, "data");
-
     const reviewData = {
       content: data.reviewText,
       rating: data.rating,

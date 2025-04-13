@@ -5,8 +5,6 @@ import HotelCard from "@/app/components/HotelCard";
 export default async function Dashboard() {
   const hotels = await getHotelOwners();
 
-  console.log("hotels", hotels);
-
   return (
     <div className=" to-yellow-100 p-8">
       <h1 className="text-4xl font-bold text-center text-orange-600">

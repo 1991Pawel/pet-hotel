@@ -99,17 +99,54 @@ export async function registerUser(data: RegisterSchema, type: string) {
   }
 }
 
-export async function getAuthUserId() {
+export async function getAuthUserId({
+  required = true,
+}: {
+  required?: boolean;
+}) {
   try {
     const session = await auth();
     const userId = session?.user?.id;
 
-    if (!userId) {
+    if (!userId && required) {
       throw new Error("Unauthorized");
     }
 
     return userId;
   } catch (error) {
     throw error;
+  }
+}
+
+export async function getUserRole(userId: string) {
+  try {
+    if (!userId) {
+      return { status: "error", error: "Unauthorized" };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        petOwner: true,
+        hotelOwner: true,
+      },
+    });
+
+    if (!user) {
+      return { status: "error", error: "User not found" };
+    }
+
+    if (user.petOwner) {
+      return { status: "success", role: USER_TYPES.PET_OWNER };
+    }
+
+    if (user.hotelOwner) {
+      return { status: "success", role: USER_TYPES.HOTEL_OWNER };
+    }
+
+    return { status: "error", error: "User role not assigned" };
+  } catch (error) {
+    console.error("Error fetching user role:", error);
+    return { status: "error", error: "Something went wrong" };
   }
 }

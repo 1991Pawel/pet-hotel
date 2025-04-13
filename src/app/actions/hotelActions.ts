@@ -1,16 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getAuthUserId } from "./authActions";
 
-export async function getHotelById(id: string) {
+export async function getHotelById(id: string, loggedUserId?: string) {
   try {
-    const userId = await getAuthUserId();
-
     const hotel = await prisma.hotelOwner.findUnique({
-      where: {
-        userId: id,
-      },
+      where: { userId: id },
       include: {
         photos: true,
         location: true,
@@ -18,38 +13,36 @@ export async function getHotelById(id: string) {
           select: {
             rating: true,
             content: true,
+            createdAt: true,
+            id: true,
             petOwner: {
-              select: {
-                user: {
-                  select: {
-                    id: true,
-                    email: true,
-                  },
-                },
-              },
+              select: { user: { select: { id: true, email: true } } },
             },
           },
         },
       },
     });
 
-    if (!hotel) {
-      return { status: "error", error: "Hotel not found." };
+    if (!hotel) return { status: "error", error: "Hotel not found." };
+
+    if (loggedUserId) {
+      const reviewsWithFlag = hotel.reviews.map((review) => ({
+        ...review,
+        isUserReview: review.petOwner?.user?.id === loggedUserId,
+      }));
+      const canAddReview =
+        !loggedUserId || !reviewsWithFlag.some((review) => review.isUserReview);
+
+      return {
+        status: "success",
+        hotel: { ...hotel, reviews: reviewsWithFlag },
+        canAddReview,
+      };
     }
-
-    let canAddReview = false;
-
-    if (userId) {
-      const hasReviewed = hotel.reviews.some(
-        (review) => review.petOwner?.user?.id === userId
-      );
-      canAddReview = !hasReviewed;
-    }
-
     return {
       status: "success",
-      hotel,
-      canAddReview,
+      hotel: { ...hotel, reviews: hotel.reviews },
+      canAddReview: false,
     };
   } catch (error) {
     console.error(error);
