@@ -1,48 +1,55 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import {
+  hasUserAlreadyReviewed,
+  addUserReviewFlagToReviews,
+} from "@/lib/services/reviewsService";
 
-export async function getHotelById(id: string, loggedUserId?: string) {
-  try {
-    const hotel = await prisma.hotelOwner.findUnique({
-      where: { userId: id },
-      include: {
-        photos: true,
-        location: true,
-        reviews: {
-          select: {
-            rating: true,
-            content: true,
-            createdAt: true,
-            id: true,
-            petOwner: {
-              select: { user: { select: { id: true, email: true } } },
+async function getHotelByIdFromDb(id: string) {
+  return prisma.hotelOwner.findUnique({
+    where: { userId: id },
+    include: {
+      photos: true,
+      location: true,
+      reviews: {
+        select: {
+          rating: true,
+          content: true,
+          createdAt: true,
+          id: true,
+          petOwner: {
+            select: {
+              user: {
+                select: { id: true, email: true },
+              },
             },
           },
         },
       },
-    });
+    },
+  });
+}
 
-    if (!hotel) return { status: "error", error: "Hotel not found." };
+export async function getHotelById(hotelId: string, loggedUserId?: string) {
+  try {
+    const hotel = await getHotelByIdFromDb(hotelId);
 
-    if (loggedUserId) {
-      const reviewsWithFlag = hotel.reviews.map((review) => ({
-        ...review,
-        isUserReview: review.petOwner?.user?.id === loggedUserId,
-      }));
-      const canAddReview =
-        !loggedUserId || !reviewsWithFlag.some((review) => review.isUserReview);
-
-      return {
-        status: "success",
-        hotel: { ...hotel, reviews: reviewsWithFlag },
-        canAddReview,
-      };
+    if (!hotel) {
+      return { status: "error", error: "Hotel not found." };
     }
+
+    const flagUserReviews = loggedUserId
+      ? addUserReviewFlagToReviews(hotel.reviews, loggedUserId)
+      : hotel.reviews;
+
+    const canAddReview = loggedUserId
+      ? hasUserAlreadyReviewed(hotel.reviews, loggedUserId)
+      : false;
+
     return {
       status: "success",
-      hotel: { ...hotel, reviews: hotel.reviews },
-      canAddReview: false,
+      hotel: { ...hotel, reviews: flagUserReviews, canAddReview },
     };
   } catch (error) {
     console.error(error);

@@ -19,7 +19,7 @@ export type HotelCardProps = {
 
 const HotelCard = ({ hotel }: HotelCardProps) => {
   return (
-    <Link key={hotel.userId} href={`/user/${hotel.userId}`}>
+    <Link key={hotel.userId} href={`/hotels/${hotel.userId}`}>
       <div className="cursor-pointer">
         <div>
           <div className="relative mb-1 aspect-1/1 ">
