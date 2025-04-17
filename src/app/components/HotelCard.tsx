@@ -7,7 +7,7 @@ export type HotelCardProps = {
     name: string | null;
     userId: string;
     rating?: number;
-    avgRating: number | null;
+    averageRating: number | null;
     location: {
       city: string;
     } | null;
@@ -36,9 +36,9 @@ const HotelCard = ({ hotel }: HotelCardProps) => {
               <h2 className="font-semibold ">{hotel.name}</h2>
               <div className="flex items-center">
                 <span className="text-yellow-500">★</span>
-                {hotel.avgRating && (
+                {hotel.averageRating && (
                   <span className="ml-1 text-sm text-gray-500">
-                    {hotel.avgRating}
+                    {hotel.averageRating}
                   </span>
                 )}
               </div>

@@ -5,7 +5,6 @@ import {
   hasUserAlreadyReviewed,
   addUserReviewFlagToReviews,
 } from "@/lib/services/reviewsService";
-
 async function getHotelByIdFromDb(id: string) {
   return prisma.hotelOwner.findUnique({
     where: { userId: id },

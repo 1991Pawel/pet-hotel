@@ -27,28 +27,95 @@ export default async function HotelId({
     return notFound();
   }
 
+  const reviews = hotel.reviews;
+  const reviewsCount = reviews.length;
+  const photos = hotel.photos;
+  
+
+  console.log("Hotel data:", hotel);
+
   return (
-    <div>
-      test
-      <div className={style.user}>
-        <h2 className={style.userName}>{hotel.name}</h2>
-        <li>
-          <Link className={style.link} href={`/user/${hotelId}/chat`}>
-            Czat
-          </Link>
-        </li>
-        {hotel.photos[0]?.url && (
-          <Image
-            className={style.image}
-            alt={hotel.name || "Hotel Piesek"}
-            src={hotel.photos[0].url}
-            width={100}
-            height={100}
+   
+    <div className="bg-[#fef7f3] min-h-screen p-6 flex justify-center">
+    <div className="max-w-6xl w-full bg-white rounded-3xl shadow-lg overflow-hidden grid md:grid-cols-3 gap-6 p-4">
+      {/* LEFT SIDE */}
+      <div className="md:col-span-2">
+        {/* PHOTOS */}
+        <div className="grid grid-cols-4 gap-2 mb-6">
+          {photos.map((photo, index) => (
+            <img
+              key={index}
+              src={photo.url}
+              alt={`Photo ${index + 1}`}
+              className={`col-span-2 md:col-span-1 w-full h-24 object-cover rounded-xl ${
+                index === 0 ? "md:row-span-2" : ""
+              }`}
+            />
+          ))}
+          
+          <img
+            src="/martyna.jpg"
+            alt="Main"
+            className="col-span-4 md:col-span-2 md:row-span-2 w-full h-full object-cover rounded-xl"
           />
-        )}
-        <ReviewsList reviews={hotel.reviews} />
-        {canAddReview && <ReviewForm />}
+          <img
+            src="/photo2.jpg"
+            alt="2"
+            className="hidden md:block w-full h-24 object-cover rounded-xl"
+          />
+          <img
+            src="/photo3.jpg"
+            alt="3"
+            className="hidden md:block w-full h-24 object-cover rounded-xl"
+          />
+          <img
+            src="/photo4.jpg"
+            alt="4"
+            className="hidden md:block w-full h-24 object-cover rounded-xl"
+          />
+          <div className="hidden md:flex w-full h-24 bg-gray-200 rounded-xl items-center justify-center text-sm text-gray-600">
+            +5 zdjęć
+          </div>
+        </div>
+
+        {/* NAME & LOCATION */}
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold">Martyna</h1>
+          <p className="text-gray-600">Warszawa</p>
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-red-500">★ {reviewsCount}</span>
+            <span className="text-sm text-gray-500">{`(${reviewsCount})`}</span>
+          </div>
+        </div>
+
+        {/* ABOUT */}
+        <div>
+          <h2 className="text-lg font-semibold mb-2">O mnie</h2>
+          <p className="text-gray-700 leading-relaxed text-sm">
+            Hej! Jestem Martyna. Mieszkam z moimi przyjaciółkami i razem
+            opiekujemy się zwierzakami z ogromną pasją. Blisko mamy park – idealne miejsce na spacery. 💕
+          </p>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE */}
+      <div className="bg-gray-50 p-6 rounded-2xl shadow-sm h-fit flex flex-col justify-between">
+        <div className="mb-4">
+          <h3 className="text-sm text-gray-500 mb-1">Usługa</h3>
+          <p className="text-lg font-semibold">Nocleg zwykły</p>
+          <p className="text-sm text-gray-400">Cena: 59 zł / noc</p>
+        </div>
+
+        <button className="mt-4 w-full bg-pink-600 hover:bg-pink-700 text-white py-2 rounded-xl text-sm font-medium">
+          ✉️ Wyślij wiadomość
+        </button>
+
+        <p className="text-xs text-gray-500 text-center mt-3">
+          Skontaktuj się, aby zapytać o dostępność
+        </p>
       </div>
     </div>
+  </div>
+
   );
 }

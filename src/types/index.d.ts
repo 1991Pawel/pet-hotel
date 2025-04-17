@@ -25,3 +25,15 @@ type MessageWithSenderRecipient = Prisma.MessageGetPayload<{
     };
   };
 }>;
+
+
+type ReviewWithRelations = Prisma.ReviewGetPayload<{
+  include: {
+    petOwner: {
+      include: {
+        user: true;
+      };
+    };
+  };
+}>;
+

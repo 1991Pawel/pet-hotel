@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUserId } from "./authActions";
 
+
 export async function addReview(review: {
   content: string;
   rating: number;
@@ -10,15 +11,11 @@ export async function addReview(review: {
 }) {
   try {
     const userId = await getAuthUserId({ required: true });
-    console.log("Authenticated user ID:", userId);
 
     if (!review.content || !review.rating || !review.hotelOwnerId) {
       throw new Error("Missing required fields.");
     }
 
-    console.log("Review data:", review);
-
-    // Sprawdzenie, czy użytkownik jest właścicielem zwierzęcia (PetOwner)
     const petOwner = await prisma.petOwner.findUnique({
       where: {
         userId: userId,
@@ -29,9 +26,8 @@ export async function addReview(review: {
       throw new Error("User is not a valid PetOwner.");
     }
 
-    console.log("Pet Owner found:", petOwner);
 
-    // Sprawdzenie, czy właściciel hotelu (HotelOwner) istnieje
+
     const hotelOwner = await prisma.hotelOwner.findUnique({
       where: {
         userId: review.hotelOwnerId,
@@ -44,9 +40,7 @@ export async function addReview(review: {
       );
     }
 
-    console.log("Hotel Owner found:", hotelOwner);
 
-    // Sprawdzenie, czy użytkownik już dodał recenzję dla tego hotelu
     const existingReview = await prisma.review.findFirst({
       where: {
         petOwnerId: petOwner.id,
@@ -58,7 +52,7 @@ export async function addReview(review: {
       throw new Error("You have already reviewed this hotel.");
     }
 
-    // Tworzenie nowej recenzji
+
     const createdReview = await prisma.review.create({
       data: {
         content: review.content,
