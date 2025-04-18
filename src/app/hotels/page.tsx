@@ -1,4 +1,4 @@
-import { getHotelOwners } from "../actions/hotelOwnerActions";
+import { getHotelOwners } from "../actions/hotelActions";
 
 import HotelCard from "@/app/components/HotelCard";
 

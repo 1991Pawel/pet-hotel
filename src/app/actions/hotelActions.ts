@@ -1,10 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+
 import {
   hasUserAlreadyReviewed,
   addUserReviewFlagToReviews,
+  hotelOwnersWithAvg
 } from "@/lib/services/reviewsService";
+
 async function getHotelByIdFromDb(id: string) {
   return prisma.hotelOwner.findUnique({
     where: { userId: id },
@@ -30,9 +33,28 @@ async function getHotelByIdFromDb(id: string) {
   });
 }
 
+async function getHotelOwnersFromDb() {
+  return   prisma.hotelOwner.findMany({
+    include: {
+      photos: true,
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
+      location: {
+        select: {
+          city: true,
+        },
+      },
+    },
+  });
+}
+
 export async function getHotelById(hotelId: string, loggedUserId?: string) {
   try {
     const hotel = await getHotelByIdFromDb(hotelId);
+    const hotelOwnersWithReviews = hotelOwnersWithAvg([hotel]);
 
     if (!hotel) {
       return { status: "error", error: "Hotel not found." };
@@ -53,5 +75,17 @@ export async function getHotelById(hotelId: string, loggedUserId?: string) {
   } catch (error) {
     console.error(error);
     return { status: "error", error: "Something went wrong." };
+  }
+}
+
+export async function getHotelOwners() {
+  try {
+    const hotelOwners = await getHotelOwnersFromDb();
+    const hotelOwnersWithReviews = hotelOwnersWithAvg(hotelOwners);
+
+    return hotelOwnersWithReviews;
+  } catch (error) {
+    console.log("Error fetching hotel owners:", error);
+    throw error;
   }
 }

@@ -37,3 +37,18 @@ type ReviewWithRelations = Prisma.ReviewGetPayload<{
   };
 }>;
 
+export type HotelCardProps = {
+  hotel: {
+    id: string;
+    name: string | null;
+    userId: string;
+    rating?: number;
+    averageRating: number | null;
+    location: {
+      city: string;
+    } | null;
+    photos: {
+      url: string;
+    }[];
+  };
+};
