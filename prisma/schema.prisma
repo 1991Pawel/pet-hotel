@@ -37,6 +37,11 @@ model PetOwner {
   reviews     Review[]
 }
 
+enum AnimalType {
+  DOG
+  CAT
+}
+
 model HotelOwner {
   id          String     @id @default(cuid())
   userId      String     @unique
@@ -45,6 +50,10 @@ model HotelOwner {
   photos      Photo[]
   location    Location?  @relation("HotelOwnerLocation")
   reviews     Review[]
+  descriptionHtml String?
+  acceptedAnimals AnimalType[]
+  minPricePerNight Int?
+  maxPricePerNight Int?
 }
 
 model Location {

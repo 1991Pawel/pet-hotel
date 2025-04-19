@@ -54,11 +54,15 @@ async function getHotelOwnersFromDb() {
 export async function getHotelById(hotelId: string, loggedUserId?: string) {
   try {
     const hotel = await getHotelByIdFromDb(hotelId);
-    const hotelOwnersWithReviews = hotelOwnersWithAvg([hotel]);
+  
 
     if (!hotel) {
       return { status: "error", error: "Hotel not found." };
     }
+
+    const [hotelOwnerWithReviews] = hotelOwnersWithAvg([hotel]);
+
+    
 
     const flagUserReviews = loggedUserId
       ? addUserReviewFlagToReviews(hotel.reviews, loggedUserId)
@@ -70,7 +74,7 @@ export async function getHotelById(hotelId: string, loggedUserId?: string) {
 
     return {
       status: "success",
-      hotel: { ...hotel, reviews: flagUserReviews, canAddReview },
+      hotel: {  reviews: flagUserReviews, canAddReview ,...hotelOwnerWithReviews },
     };
   } catch (error) {
     console.error(error);

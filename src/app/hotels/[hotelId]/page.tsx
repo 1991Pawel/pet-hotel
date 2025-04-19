@@ -29,6 +29,7 @@ export default async function HotelId({
 
   const reviews = hotel.reviews;
   const reviewsCount = reviews.length;
+  const averageRating = hotel.averageRating;
   const photos = hotel.photos;
   
 
@@ -41,41 +42,18 @@ export default async function HotelId({
       {/* LEFT SIDE */}
       <div className="md:col-span-2">
         {/* PHOTOS */}
-        <div className="grid grid-cols-4 gap-2 mb-6">
+        <div className="grid mb-6">
           {photos.map((photo, index) => (
             <img
               key={index}
               src={photo.url}
               alt={`Photo ${index + 1}`}
-              className={`col-span-2 md:col-span-1 w-full h-24 object-cover rounded-xl ${
+              className={`col-span-2 md:col-span-1 w-full h-54 object-cover rounded-xl ${
                 index === 0 ? "md:row-span-2" : ""
               }`}
             />
           ))}
-          
-          <img
-            src="/martyna.jpg"
-            alt="Main"
-            className="col-span-4 md:col-span-2 md:row-span-2 w-full h-full object-cover rounded-xl"
-          />
-          <img
-            src="/photo2.jpg"
-            alt="2"
-            className="hidden md:block w-full h-24 object-cover rounded-xl"
-          />
-          <img
-            src="/photo3.jpg"
-            alt="3"
-            className="hidden md:block w-full h-24 object-cover rounded-xl"
-          />
-          <img
-            src="/photo4.jpg"
-            alt="4"
-            className="hidden md:block w-full h-24 object-cover rounded-xl"
-          />
-          <div className="hidden md:flex w-full h-24 bg-gray-200 rounded-xl items-center justify-center text-sm text-gray-600">
-            +5 zdjęć
-          </div>
+         
         </div>
 
         {/* NAME & LOCATION */}
@@ -83,7 +61,7 @@ export default async function HotelId({
           <h1 className="text-2xl font-bold">Martyna</h1>
           <p className="text-gray-600">Warszawa</p>
           <div className="flex items-center gap-2 mt-2">
-            <span className="text-red-500">★ {reviewsCount}</span>
+            <span className="text-red-500">★ {averageRating}</span>
             <span className="text-sm text-gray-500">{`(${reviewsCount})`}</span>
           </div>
         </div>
@@ -95,6 +73,9 @@ export default async function HotelId({
             Hej! Jestem Martyna. Mieszkam z moimi przyjaciółkami i razem
             opiekujemy się zwierzakami z ogromną pasją. Blisko mamy park – idealne miejsce na spacery. 💕
           </p>
+        </div>
+        <div>
+          <ReviewsList reviews={reviews}/>
         </div>
       </div>
 
