@@ -35,6 +35,8 @@ model PetOwner {
   photos      Photo[]
   location    Location?  @relation("PetOwnerLocation")
   reviews     Review[]
+    emailVerified DateTime?
+  profileComplete Boolean? @default(false)
 }
 
 enum AnimalType {
@@ -54,6 +56,22 @@ model HotelOwner {
   acceptedAnimals AnimalType[]
   minPricePerNight Int?
   maxPricePerNight Int?
+  emailVerified DateTime?
+  profileComplete Boolean? @default(false)
+}
+
+
+enum TokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+model Token {
+  id          String     @id @default(cuid())
+  email       String
+  token       String
+  expires     DateTime
+  type TokenType
+  @@unique([email, token])
 }
 
 model Location {
