@@ -6,8 +6,19 @@ import { LoginSchema } from "@/lib/schemas/loginSchema";
 import bycrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { USER_TYPES } from "@/lib/constans";
+import { generateToken } from "@/lib/token";
+import { TokenType } from "@prisma/client";
 export async function signInUser(data: LoginSchema) {
   try {
+    const existingUser = await getUserByEmail(data.email);
+
+    if (!existingUser || !existingUser.email) {
+      return { status: "error", error: "Invalid credentials" };
+    }
+    if (!existingUser.emailVerified) {
+      return { status: "error", error: "Email not verified" };
+    }
+
     const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -91,6 +102,12 @@ export async function registerUser(data: RegisterSchema, type: string) {
         ...roleFields,
       },
     });
+
+    const verificationToken = generateToken(
+      email,
+      TokenType.EMAIL_VERIFICATION
+    );
+    //todo send email
 
     return { status: "success", user };
   } catch (error) {

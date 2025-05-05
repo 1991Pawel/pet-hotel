@@ -25,6 +25,7 @@ model User {
   hotelOwner         HotelOwner?
   senderMessages     Message[] @relation("sender")
   recipientMessages  Message[] @relation("recipient")
+  emailVerified DateTime?
 }
 
 model PetOwner {
@@ -35,7 +36,6 @@ model PetOwner {
   photos      Photo[]
   location    Location?  @relation("PetOwnerLocation")
   reviews     Review[]
-    emailVerified DateTime?
   profileComplete Boolean? @default(false)
 }
 
@@ -56,7 +56,6 @@ model HotelOwner {
   acceptedAnimals AnimalType[]
   minPricePerNight Int?
   maxPricePerNight Int?
-  emailVerified DateTime?
   profileComplete Boolean? @default(false)
 }
 
