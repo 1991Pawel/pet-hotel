@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import {
   hasUserAlreadyReviewed,
   addUserReviewFlagToReviews,
-  hotelOwnersWithAvg
+  hotelOwnersWithAvg,
 } from "@/lib/services/reviewsService";
 
 async function getHotelByIdFromDb(id: string) {
@@ -34,7 +34,7 @@ async function getHotelByIdFromDb(id: string) {
 }
 
 async function getHotelOwnersFromDb() {
-  return   prisma.hotelOwner.findMany({
+  return prisma.hotelOwner.findMany({
     include: {
       photos: true,
       reviews: {
@@ -54,15 +54,12 @@ async function getHotelOwnersFromDb() {
 export async function getHotelById(hotelId: string, loggedUserId?: string) {
   try {
     const hotel = await getHotelByIdFromDb(hotelId);
-  
 
     if (!hotel) {
       return { status: "error", error: "Hotel not found." };
     }
 
     const [hotelOwnerWithReviews] = hotelOwnersWithAvg([hotel]);
-
-    
 
     const flagUserReviews = loggedUserId
       ? addUserReviewFlagToReviews(hotel.reviews, loggedUserId)
@@ -74,7 +71,11 @@ export async function getHotelById(hotelId: string, loggedUserId?: string) {
 
     return {
       status: "success",
-      hotel: {  reviews: flagUserReviews, canAddReview ,...hotelOwnerWithReviews },
+      hotel: {
+        reviews: flagUserReviews,
+        canAddReview,
+        ...hotelOwnerWithReviews,
+      },
     };
   } catch (error) {
     console.error(error);
@@ -89,7 +90,7 @@ export async function getHotelOwners() {
 
     return hotelOwnersWithReviews;
   } catch (error) {
-    console.log("Error fetching hotel owners:", error);
+    // console.log("Error fetching hotel owners:", error);
     throw error;
   }
 }

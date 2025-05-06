@@ -8,6 +8,7 @@ import { AuthError } from "next-auth";
 import { USER_TYPES } from "@/lib/constans";
 import { generateToken } from "@/lib/token";
 import { TokenType } from "@prisma/client";
+import { sendVerificationEmail } from "@/lib/mail";
 export async function signInUser(data: LoginSchema) {
   try {
     const existingUser = await getUserByEmail(data.email);
@@ -16,6 +17,7 @@ export async function signInUser(data: LoginSchema) {
       return { status: "error", error: "Invalid credentials" };
     }
     if (!existingUser.emailVerified) {
+      ///todo send email
       return { status: "error", error: "Email not verified" };
     }
 
@@ -103,11 +105,15 @@ export async function registerUser(data: RegisterSchema, type: string) {
       },
     });
 
-    const verificationToken = generateToken(
+    const verificationToken = await generateToken(
       email,
       TokenType.EMAIL_VERIFICATION
     );
     //todo send email
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
 
     return { status: "success", user };
   } catch (error) {
