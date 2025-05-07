@@ -8,7 +8,7 @@ import { AuthError } from "next-auth";
 import { USER_TYPES } from "@/lib/constans";
 import { generateToken } from "@/lib/token";
 import { TokenType } from "@prisma/client";
-import { sendVerificationEmail } from "@/lib/mail";
+import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/mail";
 export async function signInUser(data: LoginSchema) {
   try {
     const existingUser = await getUserByEmail(data.email);
@@ -170,6 +170,24 @@ export async function getUserRole(userId: string) {
     return { status: "error", error: "User role not assigned" };
   } catch (error) {
     console.error("Error fetching user role:", error);
+    return { status: "error", error: "Something went wrong" };
+  }
+}
+
+export async function generateResetPasswordEmail(email: string) {
+  try {
+    const existingUser = await getUserByEmail(email);
+
+    if (!existingUser) {
+      return { status: "error", error: "User not found" };
+    }
+
+    const token = await generateToken(email, TokenType.PASSWORD_RESET);
+    await sendPasswordResetEmail(token.email, token.token);
+
+    return { status: "success", data: "Email sent" };
+  } catch (error) {
+    console.error("Error generating reset password email:", error);
     return { status: "error", error: "Something went wrong" };
   }
 }
