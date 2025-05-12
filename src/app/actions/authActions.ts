@@ -8,6 +8,7 @@ import { AuthError } from "next-auth";
 import { USER_TYPES } from "@/lib/constans";
 import { generateToken } from "@/lib/token";
 import { TokenType } from "@prisma/client";
+import { getTokenByToken } from "@/lib/token";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/mail";
 export async function signInUser(data: LoginSchema) {
   try {
@@ -188,6 +189,38 @@ export async function generateResetPasswordEmail(email: string) {
     return { status: "success", data: "Email sent" };
   } catch (error) {
     console.error("Error generating reset password email:", error);
+    return { status: "error", error: "Something went wrong" };
+  }
+}
+
+export async function verifyEmail(token: string) {
+  try {
+    //
+    const existingToken = await getTokenByToken(token);
+    if (!existingToken) {
+      return { status: "error", error: "User not found" };
+    }
+
+    const hasExpired = new Date() > existingToken.expires;
+
+    if (hasExpired) {
+      return { status: "error", error: "Token expired" };
+    }
+    const existingUser = await getUserByEmail(existingToken.email);
+
+    if (!existingUser) {
+      return { status: "error", error: "User not found" };
+    }
+    await prisma.user.update({
+      where: { id: existingUser.id },
+      data: { emailVerified: new Date() },
+    });
+    await prisma.token.delete({
+      where: { id: existingToken.id },
+    });
+    return { status: "success", data: "Email verified" };
+  } catch (error) {
+    console.error("Error verifying email:", error);
     return { status: "error", error: "Something went wrong" };
   }
 }
