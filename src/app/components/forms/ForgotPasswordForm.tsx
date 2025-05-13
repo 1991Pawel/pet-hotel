@@ -20,7 +20,7 @@ export default function ForgotPasswordForm() {
     console.log("Result:", result);
     setResult(result);
 
-    // Tu możesz dodać logikę wysyłki zapytania do API
+   
   };
 
   return (

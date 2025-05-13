@@ -10,6 +10,7 @@ import { generateToken } from "@/lib/token";
 import { TokenType } from "@prisma/client";
 import { getTokenByToken } from "@/lib/token";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/mail";
+import { ActionResult } from "@/types";
 export async function signInUser(data: LoginSchema) {
   try {
     const existingUser = await getUserByEmail(data.email);
@@ -225,3 +226,42 @@ export async function verifyEmail(token: string) {
   }
 }
 
+export async function resetPassword(password:string,token:string | null):Promise<ActionResult<string>> {
+  try {
+    
+    if(!token) {
+      return { status: "error", error: "Token not provided" };
+    }
+    const existingToken = await getTokenByToken(token);
+    if (!existingToken) {
+      return { status: "error", error: "User not found" };
+    }
+    const hasExpired = new Date() > existingToken.expires;
+    if (hasExpired) {
+      return { status: "error", error: "Token expired" };
+    }
+    const existingUser = await getUserByEmail(existingToken.email);
+
+    if (!existingUser) {
+      return { status: "error", error: "User not found" };
+    }
+
+    const hashedPassword = await bycrypt.hash(password, 10);
+    
+    await prisma.user.update({
+      where: { id: existingUser.id },
+      data: { passwordHash:hashedPassword},
+    });
+
+    await prisma.token.delete({
+      where: { id: existingToken.id },
+    });
+    return { status: "success", data: "Password reset successfully" };
+  
+    
+  
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return { status: "error", error: "Something went wrong" };
+  }
+}
