@@ -224,3 +224,4 @@ export async function verifyEmail(token: string) {
     return { status: "error", error: "Something went wrong" };
   }
 }
+

@@ -9,6 +9,9 @@ export default function LoginPage() {
       <Link className=" text-center underline" href="/register/pet-owner">
         Chcesz dołączyć? Załóż konto
       </Link>
+      <Link className=" text-center underline" href="/forgot-password">
+        Zapomniałeś hasła?
+      </Link>
     </div>
   );
 }

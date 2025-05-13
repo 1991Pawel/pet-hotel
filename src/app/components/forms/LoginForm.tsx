@@ -9,7 +9,7 @@ import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
 import { Button } from "@/app/components/Button";
 import { toast } from "sonner";
-import Link from "next/link";
+
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -22,7 +22,7 @@ export default function LoginForm() {
       router.push("/dashboard");
     } else if (result.status === "error") {
       toast.error("Coś poszło nie tak. ", {
-        description: "Sprawdź swoje dane logowania.",
+        description: result.error,
       });
     }
   };
