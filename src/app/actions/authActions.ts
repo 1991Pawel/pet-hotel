@@ -19,8 +19,16 @@ export async function signInUser(data: LoginSchema) {
       return { status: "error", error: "Invalid credentials" };
     }
     if (!existingUser.emailVerified) {
-      ///todo send email
-      return { status: "error", error: "Email not verified" };
+      const verificationToken = await generateToken(
+        existingUser.email,
+        TokenType.EMAIL_VERIFICATION
+      );
+  
+      await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token
+      );
+      return { status: "error", error: "Please verify your email before logging in" };
     }
 
     const result = await signIn("credentials", {
@@ -111,7 +119,7 @@ export async function registerUser(data: RegisterSchema, type: string) {
       email,
       TokenType.EMAIL_VERIFICATION
     );
-    //todo send email
+
     await sendVerificationEmail(
       verificationToken.email,
       verificationToken.token
