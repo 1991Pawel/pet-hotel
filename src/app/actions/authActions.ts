@@ -176,7 +176,7 @@ export async function getUserRole(userId: string) {
   }
 }
 
-export async function generateResetPasswordEmail(email: string) {
+export async function generateResetPasswordEmail(email: string):Promise<ActionResult<string>> {
   try {
     const existingUser = await getUserByEmail(email);
 
