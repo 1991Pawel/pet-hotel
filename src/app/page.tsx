@@ -1,18 +1,28 @@
-import { auth } from "@/auth";
-import styles from "./page.module.css";
 
-export default async function Home() {
-  const session = await auth();
+import { getHotelOwners } from "@/app/actions/hotelActions";
+import HotelCardProps from "@app/types/HotelCardProps";
+import HotelCard from "./components/HotelCard";
+
+
+
+export default async function HomePage() {
+  const hotels = await getHotelOwners();
+
   return (
-    <div className={styles.page}>
-      <br />
-      {session ? (
-        <div>
-          <h1>Logged In</h1>
-          <p>Session: {JSON.stringify(session, null, 2)}</p>
+    <div className=" to-yellow-100 p-8">
+      <h1 className="text-4xl font-bold text-center text-orange-600">
+        Hotele dla Psów 🐶
+      </h1>
+      {hotels && (
+        <div className="container mx-auto px-4  m-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 auto-rows-auto ">
+            {hotels.map((hotel:HotelCardProps) => (
+              <HotelCard key={hotel.id} hotel={hotel} />
+            ))}
+          </div>
         </div>
-      ) : null}
-      Home Page
+      )}
     </div>
   );
 }
+
