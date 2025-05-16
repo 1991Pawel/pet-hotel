@@ -5,6 +5,7 @@ export const editSchema = z.object({
 
   location: z.string().min(1, "Wpisz adres."),
   coordinates: z.array(z.number()).length(2),
+  descriptionHtml: z.string().optional(),
 });
 
 export type EditSchema = z.infer<typeof editSchema>;

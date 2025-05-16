@@ -1,8 +1,9 @@
 
 import { getAuthUserId ,getUserRole} from "@/app/actions/authActions";
 import { notFound } from "next/navigation";
-import UserEditForm from "@/app/components/UserEditForm";
+import EditHotelProfilForm from "@/app/components/EditHotelProfilForm";
 import { getHotelById } from "../actions/hotelActions";
+import { USER_TYPES } from "@/lib/constans";
 export default async function EditProfilPage() {
     const userId = await getAuthUserId(
         { required: true }
@@ -10,33 +11,23 @@ export default async function EditProfilPage() {
       if (!userId) {
     return notFound();
   }
-    const role = await getUserRole(userId);
+    const userRole = await getUserRole(userId);
     const hotel = await getHotelById(userId);
+    const hotelOwner = userRole.role === USER_TYPES.HOTEL_OWNER;
+    const petOwner = userRole.role === USER_TYPES.PET_OWNER;
 
-    console.log("hotel --", hotel);
+
+
     
-
-  
-
-  // const { userId } = await params;
-  // if (!userId) {
-  //   return notFound();
-  // }
-  // const loggedUserId = await getAuthUserId({ required: false });
-
-  // const { hotel, canAddReview } = await getHotelById(userId, loggedUserId);
-
-  
-
-  
-
   return (
     <div>
-     
-      {userId}
-      {role?.role}
-     {JSON.stringify(hotel.hotel.location.city)}
-    
+      {hotelOwner && <>
+        <EditHotelProfilForm hotel={hotel.hotel}/>
+      </>}
+      {petOwner && <>
+        nothing to see here
+      </>}
+
     </div>
   );
 }
