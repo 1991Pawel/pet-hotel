@@ -27,7 +27,7 @@ export default function ReviewForm() {
     };
 
     const result = await addReview(reviewData);
-    console.log(result, "result");
+
 
     if (result.status === "error") {
       alert(result.error);

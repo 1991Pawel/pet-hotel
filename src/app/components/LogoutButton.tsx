@@ -7,5 +7,5 @@ export default function LogoutButton() {
   const handleSignOut = async () => {
     await signOut();
   };
-  return <Button onClick={handleSignOut}>Wyloguj</Button>;
+  return <Button className="w-full" onClick={handleSignOut}>Wyloguj</Button>;
 }

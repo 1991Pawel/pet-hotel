@@ -50,8 +50,8 @@ export default function RegisterPetOwnerForm() {
 
   const onSubmit = async (data: RegisterSchema) => {
     const result = await registerUser(data, USER_TYPES.PET_OWNER);
-    console.log(result.status, "status");
-    console.log(data, "d");
+
+
     if (result.status === "error") {
       toast.error("Coś poszło nie tak.", {
         description: "Spróbuj ponownie.",

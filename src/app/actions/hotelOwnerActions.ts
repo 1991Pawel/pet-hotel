@@ -1,5 +1,5 @@
 "use server";
-// import { auth } from "@/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 // import {hotelOwnersWithAvg} from "@/lib/services/reviewsService";
 

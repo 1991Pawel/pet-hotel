@@ -62,7 +62,7 @@ export async function addReview(review: {
       },
     });
 
-    console.log("Created review:", createdReview);
+
 
     return { status: "success", data: createdReview };
   } catch (error) {

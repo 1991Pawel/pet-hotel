@@ -1,12 +1,24 @@
 
 import { getHotelOwners } from "@/app/actions/hotelActions";
-import HotelCardProps from "@app/types/HotelCardProps";
-import HotelCard from "./components/HotelCard";
+import HotelCard from "@/app/components/HotelCard";
 
+type Hotel = {
+  id: string;
+  name: string | null;
+  userId: string;
+  rating?: number;
+  averageRating: number | null;
+  location: {
+    city: string;
+  } | null;
+  photos: {
+    url: string;
+  }[];
+};
 
 
 export default async function HomePage() {
-  const hotels = await getHotelOwners();
+  const hotels:Hotel[] = await getHotelOwners();
 
   return (
     <div className=" to-yellow-100 p-8">
@@ -16,7 +28,7 @@ export default async function HomePage() {
       {hotels && (
         <div className="container mx-auto px-4  m-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 auto-rows-auto ">
-            {hotels.map((hotel:HotelCardProps) => (
+            {hotels.map((hotel) => (
               <HotelCard key={hotel.id} hotel={hotel} />
             ))}
           </div>

@@ -90,7 +90,6 @@ export async function getHotelOwners() {
 
     return hotelOwnersWithReviews;
   } catch (error) {
-    // console.log("Error fetching hotel owners:", error);
     throw error;
   }
 }

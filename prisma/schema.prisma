@@ -80,10 +80,8 @@ model Location {
   street        String?
   latitude      Float?
   longitude     Float?
-
   petOwnerId    String?      @unique
   petOwner      PetOwner?    @relation("PetOwnerLocation", fields: [petOwnerId], references: [id], onDelete: Cascade)
-
   hotelOwnerId  String?      @unique
   hotelOwner    HotelOwner?  @relation("HotelOwnerLocation", fields: [hotelOwnerId], references: [id], onDelete: Cascade)
 }
@@ -93,7 +91,6 @@ model Photo {
   publicId      String?
   url           String
   isMain        Boolean      @default(false)
-
   hotelOwnerId  String?
   petOwnerId    String?
   hotelOwner    HotelOwner?  @relation(fields: [hotelOwnerId], references: [id], onDelete: Cascade)

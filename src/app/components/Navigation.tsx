@@ -1,12 +1,14 @@
 import Link from "next/link";
-import style from "./Navigation.module.css";
 import { auth } from "@/auth";
 import { Button } from "@/app/components/Button";
-
-import { getMemberByUserId } from "@/app/actions/memberActions";
+import LogoutButton from "@/app/components/LogoutButton";
+import {  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,} from "@/app/components/DropdownMenu";
 import Image from "next/image";
-
-import LogoutButton from "./LogoutButton";
 
 const links = [
   {
@@ -27,43 +29,53 @@ export default async function Navigation() {
   // const memberMainPhoto = memberPhotos.find((photo) => photo.isMain);
 
   return (
-    <nav className={style.navigation}>
+    <nav className="w-full px-4 py-3 border-b bg-white shadow-sm flex items-center justify-between">
       {session ? (
-        <div className={style.auth}>
-          <ul className={style.list}>
+        <div className="flex items-center justify-between w-full">
+          <ul className="flex gap-2">
             <li>
               <Button asChild>
-                <Link href={`/`}>Strona główna</Link>
+                <Link href="/">Strona główna</Link>
               </Button>
             </li>
             <li>
               <Button asChild>
-                <Link href={`/messages?container=inbox`}> Wiadomości</Link>
+                <Link href="/messages?container=inbox">Wiadomości</Link>
               </Button>
             </li>
           </ul>
 
-          <div className={style.user}>
-            <LogoutButton />
-            {/* <Link href={`/user/${userId}/edit-profil`}>
-              <div className={style.avatar}>
-                <Image
-                  src={
-                    memberMainPhoto?.url ||
-                    "/assets/trash/placeholder-avatar.webp"
-                  }
-                  height={32}
-                  width={32}
-                  alt="avatar"
-                />
-              </div>
-            </Link> */}
+          <div className="flex items-center gap-4">
+     
+            <DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <div className="h-8 w-8 rounded-full overflow-hidden border border-gray-300 cursor-pointer">
+      <Image
+        src={"/assets/trash/placeholder-avatar.webp"}
+        alt="avatar"
+        width={32}
+        height={32}
+        className="object-cover"
+      />
+    </div>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="end">
+    <DropdownMenuLabel>Moje konto</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem asChild>
+      <Link href={`/edit-profil`}>Edytuj profil</Link>
+    </DropdownMenuItem>
+    <DropdownMenuItem asChild>
+    <LogoutButton />
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
           </div>
         </div>
       ) : (
-        <ul className={style.list}>
+        <ul className="flex gap-2 ml-auto">
           {links.map((link) => (
-            <li key={link.href} className={style.listItem}>
+            <li key={link.href}>
               <Button asChild>
                 <Link href={link.href}>{link.label}</Link>
               </Button>

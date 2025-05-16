@@ -35,7 +35,8 @@ export default function RegisterPetOwnerForm() {
     const token = searchParams.get("token");
   
     if (!token) {
-      console.log("Brak tokena resetującego hasło.");
+      setResult("Brak tokenu w adresie URL.");
+      return;
    
     }
   

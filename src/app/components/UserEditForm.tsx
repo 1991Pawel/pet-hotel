@@ -1,7 +1,6 @@
 "use client";
 import { useForm, Controller } from "react-hook-form";
 import style from "./UserEditForm.module.css";
-import { Member } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EditSchema, editSchema } from "@/lib/schemas/editSchema";
 import { updateMember } from "@/app/actions/userActions";

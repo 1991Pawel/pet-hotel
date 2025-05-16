@@ -10,7 +10,7 @@ export async function createMessage(recipientId: string, data: MessageSchema) {
   try {
     const userId = await getAuthUserId();
 
-    console.log(userId, "userId");
+
     const validated = messageSchema.safeParse(data);
     if (!validated.success) {
       return { status: "error", error: validated.error.errors };
@@ -124,7 +124,7 @@ export async function getSentMessages() {
 export async function deleteMessage(messageId: string, isOutbox: boolean) {
   const selector = isOutbox ? "senderDeleted" : "recipientDeleted";
 
-  console.log(selector, "selector");
+
 
   try {
     const userId = await getAuthUserId();

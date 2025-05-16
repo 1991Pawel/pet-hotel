@@ -36,7 +36,7 @@ export const hotelOwnersWithAvg = (hotelOwners) => {
     };
   });
 
-  console.log("Hotels with average ratings:", hotelsWithAvg);
+
 
   return hotelsWithAvg;
 };

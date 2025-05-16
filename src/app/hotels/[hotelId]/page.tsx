@@ -1,9 +1,5 @@
 import { getHotelById } from "@/app/actions/hotelActions";
-import style from "./page.module.css";
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import ReviewForm from "@/app/components/ReviewForm";
 import { getAuthUserId } from "@/app/actions/authActions";
 import ReviewsList from "@/app/components/ReviewsList";
 
@@ -31,9 +27,12 @@ export default async function HotelId({
   const reviewsCount = reviews.length;
   const averageRating = hotel.averageRating;
   const photos = hotel.photos;
+  const description = hotel.descriptionHtml || 'Brak opisu';
+
+  console.log("hotel", hotel);
   
 
-  console.log("Hotel data:", hotel);
+
 
   return (
    
@@ -58,8 +57,9 @@ export default async function HotelId({
 
         {/* NAME & LOCATION */}
         <div className="mb-4">
-          <h1 className="text-2xl font-bold">Martyna</h1>
-          <p className="text-gray-600">Warszawa</p>
+          <h1 className="text-2xl font-bold">{hotel.name}</h1>
+          <p className="text-gray-600">{hotel.location.city} <br/>{hotel.location.street} <br/>{hotel.location.postalCode}</p>
+   
           <div className="flex items-center gap-2 mt-2">
             <span className="text-red-500">★ {averageRating}</span>
             <span className="text-sm text-gray-500">{`(${reviewsCount})`}</span>
@@ -70,8 +70,7 @@ export default async function HotelId({
         <div>
           <h2 className="text-lg font-semibold mb-2">O mnie</h2>
           <p className="text-gray-700 leading-relaxed text-sm">
-            Hej! Jestem Martyna. Mieszkam z moimi przyjaciółkami i razem
-            opiekujemy się zwierzakami z ogromną pasją. Blisko mamy park – idealne miejsce na spacery. 💕
+            {description}
           </p>
         </div>
         <div>
