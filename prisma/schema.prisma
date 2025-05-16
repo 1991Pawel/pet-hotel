@@ -42,6 +42,7 @@ model PetOwner {
 enum AnimalType {
   DOG
   CAT
+  OTHER
 }
 
 model HotelOwner {

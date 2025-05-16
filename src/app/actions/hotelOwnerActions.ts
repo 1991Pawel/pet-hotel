@@ -39,6 +39,11 @@ export async function updateHotelOwnerProfile(data: EditSchema) {
         data: {
           name,
           descriptionHtml,
+          minPricePerNight: data.minPricePerNight,
+          maxPricePerNight: data.maxPricePerNight,
+          acceptedAnimals: {
+            set: data.acceptedAnimals,
+          },
           location: {
             update: {
               city: location,

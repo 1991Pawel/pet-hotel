@@ -3,9 +3,9 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EditSchema, editSchema } from "@/lib/schemas/editSchema";
-import { updateMember } from "@/app/actions/userActions";
 import { updateHotelOwnerProfile } from "../actions/hotelOwnerActions";
 import { useRouter } from "next/navigation";
+import { AnimalType } from "@prisma/client";
 import Geocoder from "./Geocoder";
 
 
@@ -23,12 +23,15 @@ type Props = {
       longitude: number | null;
     } | null;
     descriptionHtml: string | null;
+    minPricePerNight: number | null;
+    maxPricePerNight: number | null;
+    acceptedAnimals: AnimalType[];
   };
 };
+const animalTypes = Object.values(AnimalType) as [AnimalType, ...AnimalType[]];
 
 export default function EditHotelProfilForm({ hotel }: Props) {
   const router = useRouter();
-
   const {
     register,
     handleSubmit,
@@ -40,11 +43,15 @@ export default function EditHotelProfilForm({ hotel }: Props) {
     resolver: zodResolver(editSchema),
     defaultValues: {
       name: hotel?.name ?? "",
+      acceptedAnimals: hotel?.acceptedAnimals ?? [],
       location: hotel?.location?.city ?? "",
       coordinates: hotel?.location?.latitude && hotel?.location?.longitude
         ? [hotel.location.latitude, hotel.location.longitude]
         : [0, 0],
         descriptionHtml: hotel?.descriptionHtml ?? "",
+        minPricePerNight: hotel?.minPricePerNight ?? 0,
+        maxPricePerNight: hotel?.maxPricePerNight ?? 0
+        
         
     },
   });
@@ -81,7 +88,7 @@ export default function EditHotelProfilForm({ hotel }: Props) {
         </div>
 
         <div>
-          <Label htmlFor="location">Lokalizacja</Label>
+
           <Controller
             name="location"
             control={control}
@@ -111,6 +118,64 @@ export default function EditHotelProfilForm({ hotel }: Props) {
             </p>
           )}
         </div>
+
+<div>
+  <Label>Akceptowane zwierzęta</Label>
+  <div className="space-y-2">
+    {animalTypes.map((type) => (
+      <div key={type} className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id={`animal-${type}`}
+          value={type}
+          {...register("acceptedAnimals")}
+          className="h-4 w-4"
+        />
+        <label htmlFor={`animal-${type}`} className="text-sm">
+          {type === "DOG" ? "Psy" : type === "CAT" ? "Koty" : "Inne"}
+        </label>
+      </div>
+    ))}
+  </div>
+  {errors.acceptedAnimals && (
+    <p className="text-sm text-red-500 mt-1">
+      {errors.acceptedAnimals.message}
+    </p>
+  )}
+</div>
+
+
+<div className="flex gap-4">
+  <div className="w-1/2">
+    <Label htmlFor="minPricePerNight">Cena minimalna (PLN)</Label>
+    <Input
+      id="minPricePerNight"
+      type="number"
+      {...register("minPricePerNight", { valueAsNumber: true })}
+      placeholder="np. 100"
+    />
+    {errors.minPricePerNight && (
+      <p className="text-sm text-red-500 mt-1">
+        {errors.minPricePerNight.message}
+      </p>
+    )}
+  </div>
+
+  <div className="w-1/2">
+    <Label htmlFor="maxPricePerNight">Cena maksymalna (PLN)</Label>
+    <Input
+      id="maxPricePerNight"
+      type="number"
+      {...register("maxPricePerNight", { valueAsNumber: true })}
+      placeholder="np. 300"
+    />
+    {errors.maxPricePerNight && (
+      <p className="text-sm text-red-500 mt-1">
+        {errors.maxPricePerNight.message}
+      </p>
+    )}
+  </div>
+</div>
 
         <Button
           type="submit"
