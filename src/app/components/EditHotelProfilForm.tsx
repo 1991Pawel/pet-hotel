@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { AnimalType } from "@prisma/client";
 import Geocoder from "./Geocoder";
 
-
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
 import { Button } from "@/app/components/Button";
@@ -28,7 +27,13 @@ type Props = {
     acceptedAnimals: AnimalType[];
   };
 };
-const animalTypes = Object.values(AnimalType) as [AnimalType, ...AnimalType[]];
+const animalTypes: AnimalType[] = ["DOG", "CAT", "OTHER"];
+
+const AnimalTypeLabels: Record<AnimalType, string> = {
+  DOG: "Psy",
+  CAT: "Koty",
+  OTHER: "Inne",
+};
 
 export default function EditHotelProfilForm({ hotel }: Props) {
   const router = useRouter();
@@ -45,14 +50,13 @@ export default function EditHotelProfilForm({ hotel }: Props) {
       name: hotel?.name ?? "",
       acceptedAnimals: hotel?.acceptedAnimals ?? [],
       location: hotel?.location?.city ?? "",
-      coordinates: hotel?.location?.latitude && hotel?.location?.longitude
-        ? [hotel.location.latitude, hotel.location.longitude]
-        : [0, 0],
-        descriptionHtml: hotel?.descriptionHtml ?? "",
-        minPricePerNight: hotel?.minPricePerNight ?? 0,
-        maxPricePerNight: hotel?.maxPricePerNight ?? 0
-        
-        
+      coordinates:
+        hotel?.location?.latitude && hotel?.location?.longitude
+          ? [hotel.location.latitude, hotel.location.longitude]
+          : [0, 0],
+      descriptionHtml: hotel?.descriptionHtml ?? "",
+      minPricePerNight: hotel?.minPricePerNight ?? 0,
+      maxPricePerNight: hotel?.maxPricePerNight ?? 0,
     },
   });
 
@@ -77,7 +81,6 @@ export default function EditHotelProfilForm({ hotel }: Props) {
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white shadow rounded-md">
-      {/* {JSON.stringify(hotel)} */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <Label htmlFor="name">Nazwa hotelu</Label>
@@ -88,7 +91,6 @@ export default function EditHotelProfilForm({ hotel }: Props) {
         </div>
 
         <div>
-
           <Controller
             name="location"
             control={control}
@@ -119,63 +121,62 @@ export default function EditHotelProfilForm({ hotel }: Props) {
           )}
         </div>
 
-<div>
-  <Label>Akceptowane zwierzęta</Label>
-  <div className="space-y-2">
-    {animalTypes.map((type) => (
-      <div key={type} className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id={`animal-${type}`}
-          value={type}
-          {...register("acceptedAnimals")}
-          className="h-4 w-4"
-        />
-        <label htmlFor={`animal-${type}`} className="text-sm">
-          {type === "DOG" ? "Psy" : type === "CAT" ? "Koty" : "Inne"}
-        </label>
-      </div>
-    ))}
-  </div>
-  {errors.acceptedAnimals && (
-    <p className="text-sm text-red-500 mt-1">
-      {errors.acceptedAnimals.message}
-    </p>
-  )}
-</div>
+        <div>
+          <Label>Akceptowane zwierzęta</Label>
+          <div className="space-y-2">
+            {animalTypes.map((type) => (
+              <div key={type} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id={`animal-${type}`}
+                  value={type}
+                  {...register("acceptedAnimals")}
+                  className="h-4 w-4"
+                />
+                <label htmlFor={`animal-${type}`} className="text-sm">
+                  {AnimalTypeLabels[type]}
+                </label>
+              </div>
+            ))}
+          </div>
+          {errors.acceptedAnimals && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.acceptedAnimals.message}
+            </p>
+          )}
+        </div>
 
+        <div className="flex gap-4">
+          <div className="w-1/2">
+            <Label htmlFor="minPricePerNight">Cena minimalna (PLN)</Label>
+            <Input
+              id="minPricePerNight"
+              type="number"
+              {...register("minPricePerNight", { valueAsNumber: true })}
+              placeholder="np. 100"
+            />
+            {errors.minPricePerNight && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.minPricePerNight.message}
+              </p>
+            )}
+          </div>
 
-<div className="flex gap-4">
-  <div className="w-1/2">
-    <Label htmlFor="minPricePerNight">Cena minimalna (PLN)</Label>
-    <Input
-      id="minPricePerNight"
-      type="number"
-      {...register("minPricePerNight", { valueAsNumber: true })}
-      placeholder="np. 100"
-    />
-    {errors.minPricePerNight && (
-      <p className="text-sm text-red-500 mt-1">
-        {errors.minPricePerNight.message}
-      </p>
-    )}
-  </div>
-
-  <div className="w-1/2">
-    <Label htmlFor="maxPricePerNight">Cena maksymalna (PLN)</Label>
-    <Input
-      id="maxPricePerNight"
-      type="number"
-      {...register("maxPricePerNight", { valueAsNumber: true })}
-      placeholder="np. 300"
-    />
-    {errors.maxPricePerNight && (
-      <p className="text-sm text-red-500 mt-1">
-        {errors.maxPricePerNight.message}
-      </p>
-    )}
-  </div>
-</div>
+          <div className="w-1/2">
+            <Label htmlFor="maxPricePerNight">Cena maksymalna (PLN)</Label>
+            <Input
+              id="maxPricePerNight"
+              type="number"
+              {...register("maxPricePerNight", { valueAsNumber: true })}
+              placeholder="np. 300"
+            />
+            {errors.maxPricePerNight && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.maxPricePerNight.message}
+              </p>
+            )}
+          </div>
+        </div>
 
         <Button
           type="submit"
