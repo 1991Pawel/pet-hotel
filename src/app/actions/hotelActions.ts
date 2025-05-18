@@ -34,20 +34,37 @@ async function getHotelByIdFromDb(id: string) {
   });
 }
 
-async function getHotelOwnersFromDb(
-  animalTypes?: AnimalType[],
-  minPrice: string,
-  maxPrice: string
-) {
+async function getHotelOwnersFromDb({
+  minPrice,
+  maxPrice,
+  animalTypes,
+}: {
+  animalTypes?: AnimalType[];
+  minPrice: string;
+  maxPrice: string;
+}) {
+  console.log(minPrice, maxPrice, "priceeeee");
   try {
     const selectedHotels = {
       where: {
         ...(animalTypes &&
           animalTypes.length > 0 && {
             acceptedAnimals: {
-              equals: animalTypes,
+              hasSome: animalTypes,
             },
           }),
+        AND: [
+          {
+            minPricePerNight: {
+              lte: parseInt(maxPrice),
+            },
+          },
+          {
+            maxPricePerNight: {
+              gte: parseInt(minPrice),
+            },
+          },
+        ],
       },
     };
 
@@ -115,11 +132,11 @@ export async function getHotelOwners({
   maxPrice?: string;
 }) {
   try {
-    const hotelOwners = await getHotelOwnersFromDb(
+    const hotelOwners = await getHotelOwnersFromDb({
       animalTypes,
       minPrice,
-      maxPrice
-    );
+      maxPrice,
+    });
     const hotelOwnersWithReviews = hotelOwnersWithAvg(hotelOwners);
 
     return hotelOwnersWithReviews;

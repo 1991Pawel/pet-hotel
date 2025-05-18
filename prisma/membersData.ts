@@ -3,6 +3,11 @@ export const membersData = [
     email: "test@wp.pl",
     image: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
     name: "Hotel Testowy",
+    maxPricePerNight: 100,
+    minPricePerNight: 50,
+    description:
+      "Nowoczesny hotel w centrum Warszawy. 🐾<br>Duży wybieg dla psów.",
+    AnimalType: ["DOG", "CAT"],
     location: [
       {
         city: "Warszawa",
@@ -29,6 +34,11 @@ export const membersData = [
   },
   {
     email: "sunrise@wp.pl",
+    maxPricePerNight: 100,
+    minPricePerNight: 50,
+    AnimalType: ["DOG"],
+    description:
+      "Kameralny hotel w sercu Wrocławia. 🐱<br>Idealny dla kotów i małych zwierząt.",
     image:
       "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/85/85396ee4274f5755b0b453d77fa110336cce37ad_full.jpg",
     name: "Hotel Sunrise",
@@ -61,6 +71,11 @@ export const membersData = [
     image:
       "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/20/200b6fb83907ac0a4e08f0cbbd8f61634f325794_full.jpg",
     name: "Cozy Stay",
+    AnimalType: ["CAT", "OTHER"],
+    maxPricePerNight: 100,
+    minPricePerNight: 50,
+    description:
+      "Kameralny hotel w sercu Wrocławia. 🐱<br>Idealny dla kotów i małych zwierząt.",
     location: [
       {
         city: "Wrocław",
