@@ -24,7 +24,7 @@ export default function Filters() {
   const [maxPrice, setMaxPrice] = useState<string>("");
 
   useEffect(() => {
-    const animals = searchParams.getAll("animal");
+    const animals = searchParams.getAll("animalTypes");
     const min = searchParams.get("minPrice");
     const max = searchParams.get("maxPrice");
 
@@ -46,7 +46,7 @@ export default function Filters() {
   }) => {
     const params = new URLSearchParams();
 
-    types.forEach((t) => params.append("animal", t));
+    types.forEach((t) => params.append("animalTypes", t));
     if (min) params.set("minPrice", min);
     if (max) params.set("maxPrice", max);
 

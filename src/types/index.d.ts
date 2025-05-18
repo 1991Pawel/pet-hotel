@@ -26,7 +26,6 @@ type MessageWithSenderRecipient = Prisma.MessageGetPayload<{
   };
 }>;
 
-
 type ReviewWithRelations = Prisma.ReviewGetPayload<{
   include: {
     petOwner: {
@@ -53,4 +52,13 @@ export type HotelCardProps = {
   };
 };
 type ActionResult<T> =
-    { status: 'success', data: T } | { status: 'error', error: string | ZodIssue[] }
+  | { status: "success"; data: T }
+  | { status: "error"; error: string | ZodIssue[] };
+
+type HotelFilters = {
+  city: string;
+  rating: number;
+  minPrice: number;
+  maxPrice: number;
+  animalTypes: string[];
+};
