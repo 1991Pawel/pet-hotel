@@ -85,6 +85,7 @@ export default function Filters() {
     applyFilters({ types: newSelected });
   };
   const handleChangeCity = (value: string) => {
+    setSelectedLocation(value);
     applyFilters({ city: value });
   };
 
@@ -121,26 +122,24 @@ export default function Filters() {
           ))}
         </div>
       </div>
+      <Select
+        defaultValue="all"
+        value={selectedLocation}
+        onValueChange={handleChangeCity}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Wszystkie" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Wszystkie</SelectItem>
+          {locations.map((location) => (
+            <SelectItem key={location} value={location}>
+              {location}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-      {locations.length > 0 && (
-        <Select
-          defaultValue="all"
-          value={selectedLocation}
-          onValueChange={handleChangeCity}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Wszystkie" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Wszystkie</SelectItem>
-            {locations.map((location) => (
-              <SelectItem key={location} value={location}>
-                {location}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
       <div>
         <Label className="text-sm text-muted-foreground">
           Cena za noc (PLN)
