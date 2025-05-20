@@ -33,6 +33,7 @@ export default async function HomePage({ searchParams }: HotelFilters) {
     animalTypes: normalizeAnimalTypes(filterParams.animalTypes),
     minPrice: filterParams.minPrice,
     maxPrice: filterParams.maxPrice,
+    city: filterParams.city,
   });
   return (
     <div className=" to-yellow-100 p-8">

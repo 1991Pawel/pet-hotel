@@ -6,6 +6,14 @@ import { AnimalType } from "@prisma/client";
 import { Checkbox } from "@/app/components/Checkbox";
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/app/components/Select";
+import { getHotelsLocation } from "@/app/actions/locationActions";
 
 import { Button } from "@/app/components/Button";
 
@@ -22,33 +30,49 @@ export default function Filters() {
   const [selectedTypes, setSelectedTypes] = useState<AnimalType[]>([]);
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
+  const [locations, setLocations] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string>("all");
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const data = await getHotelsLocation();
+      setLocations(data);
+      console.log(data);
+    };
+    fetchLocations();
+  }, []);
 
   useEffect(() => {
     const animals = searchParams.getAll("animalTypes");
     const min = searchParams.get("minPrice");
     const max = searchParams.get("maxPrice");
+    const city = searchParams.get("city");
 
     if (animals.length > 0) {
       setSelectedTypes(animals as AnimalType[]);
     }
     if (min) setMinPrice(min);
     if (max) setMaxPrice(max);
+    if (city) setSelectedLocation(city);
   }, [searchParams]);
 
   const applyFilters = ({
     types = selectedTypes,
     min = minPrice,
     max = maxPrice,
+    city = selectedLocation,
   }: {
     types?: AnimalType[];
     min?: string;
     max?: string;
+    city?: string;
   }) => {
     const params = new URLSearchParams();
 
     types.forEach((t) => params.append("animalTypes", t));
     if (min) params.set("minPrice", min);
     if (max) params.set("maxPrice", max);
+    if (city && city !== "all") params.set("city", city);
 
     router.push(`?${params.toString()}`);
   };
@@ -60,6 +84,9 @@ export default function Filters() {
     setSelectedTypes(newSelected);
     applyFilters({ types: newSelected });
   };
+  const handleChangeCity = (value: string) => {
+    applyFilters({ city: value });
+  };
 
   const handlePriceChange = () => {
     applyFilters({ min: minPrice, max: maxPrice });
@@ -69,6 +96,7 @@ export default function Filters() {
     setSelectedTypes([]);
     setMinPrice("");
     setMaxPrice("");
+    setSelectedLocation("all");
     router.push("?");
   };
 
@@ -94,6 +122,25 @@ export default function Filters() {
         </div>
       </div>
 
+      {locations.length > 0 && (
+        <Select
+          defaultValue="all"
+          value={selectedLocation}
+          onValueChange={handleChangeCity}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Wszystkie" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Wszystkie</SelectItem>
+            {locations.map((location) => (
+              <SelectItem key={location} value={location}>
+                {location}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
       <div>
         <Label className="text-sm text-muted-foreground">
           Cena za noc (PLN)

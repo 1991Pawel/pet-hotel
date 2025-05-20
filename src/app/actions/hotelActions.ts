@@ -38,10 +38,12 @@ async function getHotelOwnersFromDb({
   minPrice,
   maxPrice,
   animalTypes,
+  city,
 }: {
   animalTypes?: AnimalType[];
   minPrice: string;
   maxPrice: string;
+  city?: string;
 }) {
   console.log(minPrice, maxPrice, "priceeeee");
   try {
@@ -64,6 +66,18 @@ async function getHotelOwnersFromDb({
               gte: parseInt(minPrice),
             },
           },
+          ...(city
+            ? [
+                {
+                  location: {
+                    city: {
+                      equals: city,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              ]
+            : []),
         ],
       },
     };
@@ -126,16 +140,19 @@ export async function getHotelOwners({
   animalTypes = [],
   minPrice = "0",
   maxPrice = "1000",
+  city = "",
 }: {
   animalTypes?: AnimalType[];
   minPrice?: string;
   maxPrice?: string;
+  city?: string;
 }) {
   try {
     const hotelOwners = await getHotelOwnersFromDb({
       animalTypes,
       minPrice,
       maxPrice,
+      city,
     });
     const hotelOwnersWithReviews = hotelOwnersWithAvg(hotelOwners);
 
