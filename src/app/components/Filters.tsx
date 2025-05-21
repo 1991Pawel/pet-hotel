@@ -6,6 +6,7 @@ import { AnimalType } from "@prisma/client";
 import { Checkbox } from "@/app/components/Checkbox";
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
+import { Loading } from "@/app/components/Loading";
 import {
   Select,
   SelectTrigger,
@@ -32,11 +33,14 @@ export default function Filters() {
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [locations, setLocations] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("all");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLocations = async () => {
+      setLoading(true);
       const data = await getHotelsLocation();
       setLocations(data);
+      setLoading(false);
       console.log(data);
     };
     fetchLocations();
@@ -100,6 +104,10 @@ export default function Filters() {
     setSelectedLocation("all");
     router.push("?");
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="w-full  space-y-6 bg-white p-4 rounded-xl shadow">

@@ -3,6 +3,7 @@ import HotelCard from "@/app/components/HotelCard";
 import Filters from "@/app/components/Filters";
 import HotelFilters from "@/app/types";
 import { AnimalType } from "@/app/types";
+import { Suspense } from "react";
 
 type Hotel = {
   id: string;
@@ -40,7 +41,9 @@ export default async function HomePage({ searchParams }: HotelFilters) {
       <h1 className="text-4xl font-bold text-center text-orange-600">
         Hotele dla Psów 🐶
       </h1>
-      <Filters />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Filters />
+      </Suspense>
       {JSON.stringify(filterParams)}
       {hotels && (
         <div className="container mx-auto px-4  m-8">
