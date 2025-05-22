@@ -106,8 +106,13 @@ export default function Filters() {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div className="w-full  space-y-6 bg-white p-4 rounded-xl shadow">
+        <Loading />
+      </div>
+    );
   }
+
 
   return (
     <div className="w-full  space-y-6 bg-white p-4 rounded-xl shadow">
@@ -140,8 +145,8 @@ export default function Filters() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Wszystkie</SelectItem>
-          {locations.map((location) => (
-            <SelectItem key={location} value={location}>
+          {locations.map((location,i) => (
+            <SelectItem key={i} value={location}>
               {location}
             </SelectItem>
           ))}

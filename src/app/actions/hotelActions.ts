@@ -39,13 +39,17 @@ async function getHotelOwnersFromDb({
   maxPrice,
   animalTypes,
   city,
+  page,
+  limit,
 }: {
   animalTypes?: AnimalType[];
   minPrice: string;
   maxPrice: string;
   city?: string;
+  page?: number;
+  limit?: number;
 }) {
-  console.log(minPrice, maxPrice, "priceeeee");
+
   try {
     const selectedHotels = {
       where: {
@@ -83,6 +87,8 @@ async function getHotelOwnersFromDb({
     };
 
     return await prisma.hotelOwner.findMany({
+      take: limit,
+      skip: (page - 1) * limit,
       ...selectedHotels,
       include: {
         photos: true,
@@ -141,11 +147,15 @@ export async function getHotelOwners({
   minPrice = "0",
   maxPrice = "1000",
   city = "",
+  page = 1,
+  limit = 10,
 }: {
   animalTypes?: AnimalType[];
   minPrice?: string;
   maxPrice?: string;
   city?: string;
+  page?: number;
+limit?: number;
 }) {
   try {
     const hotelOwners = await getHotelOwnersFromDb({
@@ -153,6 +163,8 @@ export async function getHotelOwners({
       minPrice,
       maxPrice,
       city,
+      page,
+      limit,
     });
     const hotelOwnersWithReviews = hotelOwnersWithAvg(hotelOwners);
 
