@@ -34,6 +34,7 @@ export default function Filters() {
   const [locations, setLocations] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("all");
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState<string>("");
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -51,6 +52,7 @@ export default function Filters() {
     const min = searchParams.get("minPrice");
     const max = searchParams.get("maxPrice");
     const city = searchParams.get("city");
+    const query = searchParams.get("query") || "";
 
     if (animals.length > 0) {
       setSelectedTypes(animals as AnimalType[]);
@@ -58,6 +60,7 @@ export default function Filters() {
     if (min) setMinPrice(min);
     if (max) setMaxPrice(max);
     if (city) setSelectedLocation(city);
+    if (query) setQuery(query);
   }, [searchParams]);
 
   const applyFilters = ({
@@ -113,13 +116,19 @@ export default function Filters() {
     );
   }
 
-
   return (
     <div className="w-full  space-y-6 bg-white p-4 rounded-xl shadow">
       <div>
         <p className="text-lg font-semibold">Filtry</p>
       </div>
-
+      <Input
+        type="text"
+        placeholder="Szukaj po nazwie"
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+        }}
+      />
       <div>
         <Label className="text-sm text-muted-foreground">Typy zwierząt</Label>
         <div className="flex flex-col gap-2 mt-2">
@@ -145,7 +154,7 @@ export default function Filters() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Wszystkie</SelectItem>
-          {locations.map((location,i) => (
+          {locations.map((location, i) => (
             <SelectItem key={i} value={location}>
               {location}
             </SelectItem>

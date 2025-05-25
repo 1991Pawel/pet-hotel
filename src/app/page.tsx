@@ -86,6 +86,7 @@ export default async function HomePage({ searchParams }: HotelFilters) {
           </div>
         </div>
       )}
+
       <Pagination>
         <PaginationContent>
           {currentPage > 1 && (

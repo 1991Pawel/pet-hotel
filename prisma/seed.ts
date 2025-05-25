@@ -1,13 +1,36 @@
 import { PrismaClient } from "@prisma/client";
-import { membersData } from "./membersData";
+import { membersData, petOwnersData } from "./membersData";
 import { hash } from "bcryptjs";
 import { AnimalType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function seedMembers() {
+async function createFirstPetOwner() {
+  const firstPetOwner = petOwnersData[0];
+
+  const user = await prisma.user.create({
+    data: {
+      email: firstPetOwner.email,
+      passwordHash: await hash("password", 10),
+      petOwner: {
+        create: {
+          name: firstPetOwner.name,
+        },
+      },
+    },
+    include: { petOwner: true },
+  });
+
+  if (!user.petOwner) {
+    throw new Error("PetOwner was not created");
+  }
+
+  return user.petOwner.id;
+}
+
+async function seedMembers({ petOwnerId }: { petOwnerId: string }) {
   for (const member of membersData) {
-    const location = member.location?.[0]; // bierzemy pierwszy obiekt lokalizacji
+    const location = member.location?.[0];
 
     await prisma.user.create({
       data: {
@@ -40,6 +63,17 @@ async function seedMembers() {
                   },
                 }
               : undefined,
+            reviews: member.reviews
+              ? {
+                  create: member.reviews.map((review) => ({
+                    content: review.content,
+                    rating: review.rating,
+                    petOwner: {
+                      connect: { id: petOwnerId },
+                    },
+                  })),
+                }
+              : undefined,
           },
         },
       },
@@ -48,7 +82,10 @@ async function seedMembers() {
 }
 
 async function main() {
-  await seedMembers();
+  const firstPetOwnerId = await createFirstPetOwner();
+  await seedMembers({
+    petOwnerId: firstPetOwnerId,
+  });
 }
 
 main()
