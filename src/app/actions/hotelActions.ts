@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { AnimalType } from "@prisma/client";
 
 import {
@@ -33,83 +34,6 @@ async function getHotelByIdFromDb(id: string) {
     },
   });
 }
-
-async function getHotelOwnersFromDb({
-  minPrice,
-  maxPrice,
-  animalTypes,
-  city,
-  page,
-  limit,
-}: {
-  animalTypes?: AnimalType[];
-  minPrice: string;
-  maxPrice: string;
-  city?: string;
-  page?: number;
-  limit?: number;
-}) {
-
-  try {
-    const selectedHotels = {
-      where: {
-        ...(animalTypes &&
-          animalTypes.length > 0 && {
-            acceptedAnimals: {
-              hasSome: animalTypes,
-            },
-          }),
-        AND: [
-          {
-            minPricePerNight: {
-              lte: parseInt(maxPrice),
-            },
-          },
-          {
-            maxPricePerNight: {
-              gte: parseInt(minPrice),
-            },
-          },
-          ...(city
-            ? [
-                {
-                  location: {
-                    city: {
-                      equals: city,
-                      mode: "insensitive",
-                    },
-                  },
-                },
-              ]
-            : []),
-        ],
-      },
-    };
-
-    return await prisma.hotelOwner.findMany({
-      take: limit,
-      skip: (page - 1) * limit,
-      ...selectedHotels,
-      include: {
-        photos: true,
-        reviews: {
-          select: {
-            rating: true,
-          },
-        },
-        location: {
-          select: {
-            city: true,
-          },
-        },
-      },
-    });
-  } catch (error) {
-    console.error("error", error);
-    throw error;
-  }
-}
-
 export async function getHotelById(hotelId: string, loggedUserId?: string) {
   try {
     const hotel = await getHotelByIdFromDb(hotelId);
@@ -142,6 +66,91 @@ export async function getHotelById(hotelId: string, loggedUserId?: string) {
   }
 }
 
+async function getHotelOwnersFromDb({
+  minPrice,
+  maxPrice,
+  animalTypes,
+  city,
+  page = 1,
+  limit = 10,
+  reviews = false,
+}: {
+  animalTypes?: AnimalType[];
+  minPrice: string;
+  maxPrice: string;
+  city?: string;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const selectedHotels = {
+      where: {
+        ...(animalTypes &&
+          animalTypes.length > 0 && {
+            acceptedAnimals: {
+              hasSome: animalTypes,
+            },
+          }),
+        minPricePerNight: {
+          lte: parseInt(maxPrice),
+        },
+        maxPricePerNight: {
+          gte: parseInt(minPrice),
+        },
+        ...(city
+          ? {
+              location: {
+                is: {
+                  city: {
+                    equals: city,
+                    mode: Prisma.QueryMode.insensitive,
+                  },
+                },
+              },
+            }
+          : {}),
+      },
+    };
+
+    const totalCount = await prisma.hotelOwner.count(selectedHotels);
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const hotels = await prisma.hotelOwner.findMany({
+      take: limit,
+      skip: (page - 1) * limit,
+      ...selectedHotels,
+      include: {
+        photos: true,
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
+        location: {
+          select: {
+            city: true,
+          },
+        },
+      },
+    });
+    const hotelOwnersWithReviews = reviews
+      ? hotelOwnersWithAvg(hotels)
+      : hotels;
+    return {
+      hotels: hotelOwnersWithReviews,
+      pagination: {
+        totalCount,
+        totalPages,
+        currentPage: page,
+        perPage: limit,
+      },
+    };
+  } catch (error) {
+    console.error("error", error);
+    throw error;
+  }
+}
+
 export async function getHotelOwners({
   animalTypes = [],
   minPrice = "0",
@@ -149,13 +158,15 @@ export async function getHotelOwners({
   city = "",
   page = 1,
   limit = 10,
+  reviews = false,
 }: {
   animalTypes?: AnimalType[];
   minPrice?: string;
   maxPrice?: string;
   city?: string;
   page?: number;
-limit?: number;
+  limit?: number;
+  reviews?: boolean;
 }) {
   try {
     const hotelOwners = await getHotelOwnersFromDb({
@@ -165,10 +176,10 @@ limit?: number;
       city,
       page,
       limit,
+      reviews,
     });
-    const hotelOwnersWithReviews = hotelOwnersWithAvg(hotelOwners);
 
-    return hotelOwnersWithReviews;
+    return hotelOwners;
   } catch (error) {
     throw error;
   }
