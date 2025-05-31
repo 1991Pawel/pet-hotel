@@ -133,17 +133,32 @@ export default function Filters() {
           setSearchQuery(e.target.value);
         }}
       />
-      <button 
+      <Button 
         onClick={
           () => {
             const params = new URLSearchParams();
+            if (selectedTypes.length > 0) {
+              selectedTypes.forEach((type) => params.append("animalTypes", type));
+            }
+            if (minPrice) {
+              params.set("minPrice", minPrice);
+            }
+            if (maxPrice) {
+              params.set("maxPrice", maxPrice);
+            }
+            if (selectedLocation && selectedLocation !== "all") {
+              params.set("city", selectedLocation);
+            } 
+
+
+            
             if (searchQuery) {
               params.set("q", searchQuery);
             }
             router.push(`?${params.toString()}`);
           }
         }
-      >Szukaj</button>
+      >Szukaj</Button>
       <div>
         <Label className="text-sm text-muted-foreground">Typy zwierząt</Label>
         <div className="flex flex-col gap-2 mt-2">
