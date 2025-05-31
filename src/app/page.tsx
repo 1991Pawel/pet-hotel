@@ -6,7 +6,6 @@ import { AnimalType } from "@/app/types";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -40,10 +39,11 @@ const normalizeAnimalTypes = (animalTypes: string | AnimalType[]) => {
 };
 export default async function HomePage({ searchParams }: HotelFilters) {
   const filterParams = (await searchParams) || {};
-  const currentPage = parseInt(searchParams.page || "1", 10);
+  const currentPage = Number(filterParams.page) || 1;
   const limit = 8;
   const hotelsData = await getHotelOwners({
     animalTypes: normalizeAnimalTypes(filterParams.animalTypes),
+    searchQuery: filterParams.q,
     minPrice: filterParams.minPrice,
     maxPrice: filterParams.maxPrice,
     city: filterParams.city,
@@ -54,22 +54,26 @@ export default async function HomePage({ searchParams }: HotelFilters) {
   const totalCount = hotelsData.pagination.totalCount;
   const totalPages = Math.ceil(totalCount / limit);
   const paginationPages = getPaginationPages(totalPages);
-  const paginationLink = (page = 1) => {
-    const params = new URLSearchParams();
 
-    Object.entries(searchParams || {}).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        if (Array.isArray(value)) {
-          value.forEach((v) => params.append(key, v));
-        } else {
-          params.set(key, value.toString());
-        }
+const getPaginationLink = (page: number) => {
+  const params = new URLSearchParams();
+
+
+  Object.entries(filterParams).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && key !== 'page') {
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, v));
+      } else {
+        params.set(key, value.toString());
       }
-    });
+    }
+  });
 
-    params.set("page", page.toString());
-    return `/?${params.toString()}`;
-  };
+
+  params.set('page', page.toString());
+
+  return `/?${params.toString()}`;
+};
 
   return (
     <div className=" to-yellow-100 p-8">
@@ -88,31 +92,31 @@ export default async function HomePage({ searchParams }: HotelFilters) {
       )}
 
       <Pagination>
-        <PaginationContent>
-          {currentPage > 1 && (
-            <PaginationItem>
-              <PaginationPrevious href={paginationLink(currentPage - 1)} />
-            </PaginationItem>
-          )}
+  <PaginationContent>
+    {currentPage > 1 && (
+      <PaginationItem>
+        <PaginationPrevious href={getPaginationLink(currentPage - 1)} />
+      </PaginationItem>
+    )}
 
-          {paginationPages.map((page) => (
-            <PaginationItem key={page}>
-              <PaginationLink
-                href={paginationLink(page)}
-                isActive={page === currentPage}
-              >
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
+    {paginationPages.map((page) => (
+      <PaginationItem key={page}>
+        <PaginationLink
+          href={getPaginationLink(page)}
+          isActive={page === currentPage}
+        >
+          {page}
+        </PaginationLink>
+      </PaginationItem>
+    ))}
 
-          {currentPage < totalPages && (
-            <PaginationItem>
-              <PaginationNext href={paginationLink(currentPage + 1)} />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
+    {currentPage < totalPages && (
+      <PaginationItem>
+        <PaginationNext href={getPaginationLink(currentPage + 1)} />
+      </PaginationItem>
+    )}
+  </PaginationContent>
+</Pagination>
     </div>
   );
 }

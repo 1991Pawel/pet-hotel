@@ -61,4 +61,6 @@ type HotelFilters = {
   minPrice: number;
   maxPrice: number;
   animalTypes: string[];
+  searchQuery: string;
+  page: number;
 };

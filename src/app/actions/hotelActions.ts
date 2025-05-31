@@ -74,6 +74,7 @@ async function getHotelOwnersFromDb({
   page = 1,
   limit = 10,
   reviews = false,
+  searchQuery = "",
 }: {
   animalTypes?: AnimalType[];
   minPrice: string;
@@ -81,6 +82,8 @@ async function getHotelOwnersFromDb({
   city?: string;
   page?: number;
   limit?: number;
+  reviews?: boolean;
+  searchQuery?: string;
 }) {
   try {
     const selectedHotels = {
@@ -109,6 +112,14 @@ async function getHotelOwnersFromDb({
               },
             }
           : {}),
+            ...(searchQuery
+      ? {
+          name: {
+            contains: searchQuery,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        }
+      : {}),
       },
     };
 
@@ -159,6 +170,7 @@ export async function getHotelOwners({
   page = 1,
   limit = 10,
   reviews = false,
+  searchQuery = "",
 }: {
   animalTypes?: AnimalType[];
   minPrice?: string;
@@ -167,6 +179,7 @@ export async function getHotelOwners({
   page?: number;
   limit?: number;
   reviews?: boolean;
+  searchQuery?: string;
 }) {
   try {
     const hotelOwners = await getHotelOwnersFromDb({
@@ -176,6 +189,7 @@ export async function getHotelOwners({
       city,
       page,
       limit,
+      searchQuery,
       reviews,
     });
 

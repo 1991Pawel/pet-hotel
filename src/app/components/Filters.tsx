@@ -34,7 +34,7 @@ export default function Filters() {
   const [locations, setLocations] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("all");
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -52,7 +52,7 @@ export default function Filters() {
     const min = searchParams.get("minPrice");
     const max = searchParams.get("maxPrice");
     const city = searchParams.get("city");
-    const query = searchParams.get("query") || "";
+    const serachQuery = searchParams.get("q") || "";
 
     if (animals.length > 0) {
       setSelectedTypes(animals as AnimalType[]);
@@ -60,7 +60,7 @@ export default function Filters() {
     if (min) setMinPrice(min);
     if (max) setMaxPrice(max);
     if (city) setSelectedLocation(city);
-    if (query) setQuery(query);
+    if (serachQuery) setSearchQuery(serachQuery);
   }, [searchParams]);
 
   const applyFilters = ({
@@ -68,11 +68,13 @@ export default function Filters() {
     min = minPrice,
     max = maxPrice,
     city = selectedLocation,
+    serachQuery = searchQuery,
   }: {
     types?: AnimalType[];
     min?: string;
     max?: string;
     city?: string;
+    serachQuery?: string;
   }) => {
     const params = new URLSearchParams();
 
@@ -80,6 +82,7 @@ export default function Filters() {
     if (min) params.set("minPrice", min);
     if (max) params.set("maxPrice", max);
     if (city && city !== "all") params.set("city", city);
+    if (serachQuery) params.set("q", searchQuery);
 
     router.push(`?${params.toString()}`);
   };
@@ -105,6 +108,7 @@ export default function Filters() {
     setMinPrice("");
     setMaxPrice("");
     setSelectedLocation("all");
+    setSearchQuery("");
     router.push("?");
   };
 
@@ -124,11 +128,22 @@ export default function Filters() {
       <Input
         type="text"
         placeholder="Szukaj po nazwie"
-        value={query}
+        value={searchQuery}
         onChange={(e) => {
-          setQuery(e.target.value);
+          setSearchQuery(e.target.value);
         }}
       />
+      <button 
+        onClick={
+          () => {
+            const params = new URLSearchParams();
+            if (searchQuery) {
+              params.set("q", searchQuery);
+            }
+            router.push(`?${params.toString()}`);
+          }
+        }
+      >Szukaj</button>
       <div>
         <Label className="text-sm text-muted-foreground">Typy zwierząt</Label>
         <div className="flex flex-col gap-2 mt-2">

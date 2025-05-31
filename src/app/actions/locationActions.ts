@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 
 
-export async function getHotelsLocation()  {
+export async function getHotelsLocation(): Promise<string[]> {
   try {
     const hotels = await prisma.hotelOwner.findMany({
       select: {
@@ -17,9 +17,13 @@ export async function getHotelsLocation()  {
       },
     });
 
-    const uniqueCities = [... new Set(hotels.map((hotel) => hotel?.location?.city))];
-    return uniqueCities
+    const cities = hotels
+      .map(hotel => hotel.location?.city)
+      .filter((city): city is string => Boolean(city));
 
+    const uniqueCities = Array.from(new Set(cities));
+
+    return uniqueCities;
   
   } catch (error) {
     console.error("Error fetching hotels location:", error);
