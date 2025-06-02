@@ -1,8 +1,8 @@
 import { getHotelOwners } from "@/app/actions/hotelActions";
 import HotelCard from "@/app/components/HotelCard";
 import Filters from "@/app/components/Filters";
-import HotelFilters from "@/app/types";
-import { AnimalType } from "@/app/types";
+import { SearchParams } from "@/lib/url-state";
+import { AnimalType } from "@prisma/client";
 import {
   Pagination,
   PaginationContent,
@@ -30,20 +30,26 @@ const getPaginationPages = (totalPages: number): number[] => {
   return Array.from({ length: totalPages }, (_, i) => i + 1);
 };
 
-const normalizeAnimalTypes = (animalTypes: string | AnimalType[]) => {
-  if (typeof animalTypes === "string") {
-    return [animalTypes];
-  } else {
-    return animalTypes;
-  }
-};
-export default async function HomePage({ searchParams }: HotelFilters) {
+const normalizeAnimalTypes = (
+  animalTypes?: string | string[]
+): AnimalType[] | undefined =>
+  animalTypes
+    ? ((Array.isArray(animalTypes)
+        ? animalTypes
+        : [animalTypes]) as AnimalType[])
+    : undefined;
+
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const filterParams = (await searchParams) || {};
   const currentPage = Number(filterParams.page) || 1;
   const limit = 8;
   const hotelsData = await getHotelOwners({
     animalTypes: normalizeAnimalTypes(filterParams.animalTypes),
-    searchQuery: filterParams.q,
+    searchQuery: filterParams.searchQuery,
     minPrice: filterParams.minPrice,
     maxPrice: filterParams.maxPrice,
     city: filterParams.city,
@@ -55,25 +61,23 @@ export default async function HomePage({ searchParams }: HotelFilters) {
   const totalPages = Math.ceil(totalCount / limit);
   const paginationPages = getPaginationPages(totalPages);
 
-const getPaginationLink = (page: number) => {
-  const params = new URLSearchParams();
+  const getPaginationLink = (page: number) => {
+    const params = new URLSearchParams();
 
-
-  Object.entries(filterParams).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && key !== 'page') {
-      if (Array.isArray(value)) {
-        value.forEach((v) => params.append(key, v));
-      } else {
-        params.set(key, value.toString());
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && key !== "page") {
+        if (Array.isArray(value)) {
+          value.forEach((v) => params.append(key, v));
+        } else {
+          params.set(key, value.toString());
+        }
       }
-    }
-  });
+    });
 
+    params.set("page", page.toString());
 
-  params.set('page', page.toString());
-
-  return `/?${params.toString()}`;
-};
+    return `/?${params.toString()}`;
+  };
 
   return (
     <div className=" to-yellow-100 p-8">
@@ -92,31 +96,31 @@ const getPaginationLink = (page: number) => {
       )}
 
       <Pagination>
-  <PaginationContent>
-    {currentPage > 1 && (
-      <PaginationItem>
-        <PaginationPrevious href={getPaginationLink(currentPage - 1)} />
-      </PaginationItem>
-    )}
+        <PaginationContent>
+          {currentPage > 1 && (
+            <PaginationItem>
+              <PaginationPrevious href={getPaginationLink(currentPage - 1)} />
+            </PaginationItem>
+          )}
 
-    {paginationPages.map((page) => (
-      <PaginationItem key={page}>
-        <PaginationLink
-          href={getPaginationLink(page)}
-          isActive={page === currentPage}
-        >
-          {page}
-        </PaginationLink>
-      </PaginationItem>
-    ))}
+          {paginationPages.map((page) => (
+            <PaginationItem key={page}>
+              <PaginationLink
+                href={getPaginationLink(page)}
+                isActive={page === currentPage}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
 
-    {currentPage < totalPages && (
-      <PaginationItem>
-        <PaginationNext href={getPaginationLink(currentPage + 1)} />
-      </PaginationItem>
-    )}
-  </PaginationContent>
-</Pagination>
+          {currentPage < totalPages && (
+            <PaginationItem>
+              <PaginationNext href={getPaginationLink(currentPage + 1)} />
+            </PaginationItem>
+          )}
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

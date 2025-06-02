@@ -55,7 +55,7 @@ type ActionResult<T> =
   | { status: "success"; data: T }
   | { status: "error"; error: string | ZodIssue[] };
 
-type HotelFilters = {
+export type HotelFilters = {
   city: string;
   rating: number;
   minPrice: number;

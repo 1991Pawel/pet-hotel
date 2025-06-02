@@ -7,6 +7,7 @@ import { Checkbox } from "@/app/components/Checkbox";
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
 import { Loading } from "@/app/components/Loading";
+import { parseSearchParams } from "@/lib/url-state";
 import {
   Select,
   SelectTrigger,
@@ -27,6 +28,9 @@ const animalLabels: Record<AnimalType, string> = {
 export default function Filters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const parsedSearchParams = parseSearchParams(searchParams);
+
+  const [filters, setFilters] = useState(parsedSearchParams);
 
   const [selectedTypes, setSelectedTypes] = useState<AnimalType[]>([]);
   const [minPrice, setMinPrice] = useState<string>("");
@@ -47,21 +51,25 @@ export default function Filters() {
     fetchLocations();
   }, []);
 
-  useEffect(() => {
-    const animals = searchParams.getAll("animalTypes");
-    const min = searchParams.get("minPrice");
-    const max = searchParams.get("maxPrice");
-    const city = searchParams.get("city");
-    const serachQuery = searchParams.get("q") || "";
+  const handleFilterChange = (key, value) => {
+    console.log(key, value);
+  };
 
-    if (animals.length > 0) {
-      setSelectedTypes(animals as AnimalType[]);
-    }
-    if (min) setMinPrice(min);
-    if (max) setMaxPrice(max);
-    if (city) setSelectedLocation(city);
-    if (serachQuery) setSearchQuery(serachQuery);
-  }, [searchParams]);
+  // useEffect(() => {
+  //   const animals = searchParams.getAll("animalTypes");
+  //   const min = searchParams.get("minPrice");
+  //   const max = searchParams.get("maxPrice");
+  //   const city = searchParams.get("city");
+  //   const serachQuery = searchParams.get("q") || "";
+
+  //   if (animals.length > 0) {
+  //     setSelectedTypes(animals as AnimalType[]);
+  //   }
+  //   if (min) setMinPrice(min);
+  //   if (max) setMaxPrice(max);
+  //   if (city) setSelectedLocation(city);
+  //   if (serachQuery) setSearchQuery(serachQuery);
+  // }, [searchParams]);
 
   const applyFilters = ({
     types = selectedTypes,
@@ -125,6 +133,7 @@ export default function Filters() {
       <div>
         <p className="text-lg font-semibold">Filtry</p>
       </div>
+
       <Input
         type="text"
         placeholder="Szukaj po nazwie"
@@ -133,40 +142,40 @@ export default function Filters() {
           setSearchQuery(e.target.value);
         }}
       />
-      <Button 
-        onClick={
-          () => {
-            const params = new URLSearchParams();
-            if (selectedTypes.length > 0) {
-              selectedTypes.forEach((type) => params.append("animalTypes", type));
-            }
-            if (minPrice) {
-              params.set("minPrice", minPrice);
-            }
-            if (maxPrice) {
-              params.set("maxPrice", maxPrice);
-            }
-            if (selectedLocation && selectedLocation !== "all") {
-              params.set("city", selectedLocation);
-            } 
-
-
-            
-            if (searchQuery) {
-              params.set("q", searchQuery);
-            }
-            router.push(`?${params.toString()}`);
+      <Button
+        onClick={() => {
+          const params = new URLSearchParams();
+          if (selectedTypes.length > 0) {
+            selectedTypes.forEach((type) => params.append("animalTypes", type));
           }
-        }
-      >Szukaj</Button>
+          if (minPrice) {
+            params.set("minPrice", minPrice);
+          }
+          if (maxPrice) {
+            params.set("maxPrice", maxPrice);
+          }
+          if (selectedLocation && selectedLocation !== "all") {
+            params.set("city", selectedLocation);
+          }
+
+          if (searchQuery) {
+            params.set("q", searchQuery);
+          }
+          router.push(`?${params.toString()}`);
+        }}
+      >
+        Szukaj
+      </Button>
       <div>
         <Label className="text-sm text-muted-foreground">Typy zwierząt</Label>
         <div className="flex flex-col gap-2 mt-2">
+          {JSON.stringify(filters)}
           {(Object.keys(animalLabels) as AnimalType[]).map((type) => (
             <div key={type} className="flex items-center space-x-2">
               <Checkbox
                 id={type}
-                checked={selectedTypes.includes(type)}
+                // checked={filters["animalTypes"].includes(type)}
+                checked={false}
                 onCheckedChange={() => toggleType(type)}
               />
               <Label htmlFor={type}>{animalLabels[type]}</Label>

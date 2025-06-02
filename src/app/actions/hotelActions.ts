@@ -112,14 +112,6 @@ async function getHotelOwnersFromDb({
               },
             }
           : {}),
-            ...(searchQuery
-      ? {
-          name: {
-            contains: searchQuery,
-            mode: Prisma.QueryMode.insensitive,
-          },
-        }
-      : {}),
       },
     };
 
