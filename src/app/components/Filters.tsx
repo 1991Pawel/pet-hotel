@@ -1,13 +1,14 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { AnimalType } from "@prisma/client";
 import { Checkbox } from "@/app/components/Checkbox";
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
 import { Loading } from "@/app/components/Loading";
-import { parseSearchParams } from "@/lib/url-state";
+import { parseSearchParams, stringifySearchParams } from "@/lib/url-state";
+
 import {
   Select,
   SelectTrigger,
@@ -28,13 +29,21 @@ const animalLabels: Record<AnimalType, string> = {
 export default function Filters() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const parsedSearchParams = parseSearchParams(searchParams);
+  const parsedSearchParams = useMemo(
+    () => parseSearchParams(searchParams),
+    [searchParams]
+  );
+  // const [filters, setFilters] = useState(parsedSearchParams);
+  // const [minPrice, setMinPrice] = useState<string>(filters.minPrice ?? "");
+  // const [maxPrice, setMaxPrice] = useState<string>(filters.maxPrice ?? "");
 
-  const [filters, setFilters] = useState(parsedSearchParams);
-
-  const [selectedTypes, setSelectedTypes] = useState<AnimalType[]>([]);
-  const [minPrice, setMinPrice] = useState<string>("");
-  const [maxPrice, setMaxPrice] = useState<string>("");
+  // const [selectedTypes, setSelectedTypes] = useState<AnimalType[]>([]);
+  const [minPrice, setMinPrice] = useState<string>(
+    parsedSearchParams.minPrice ?? ""
+  );
+  const [maxPrice, setMaxPrice] = useState<string>(
+    parsedSearchParams.maxPrice ?? ""
+  );
   const [locations, setLocations] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("all");
   const [loading, setLoading] = useState(true);
@@ -50,10 +59,6 @@ export default function Filters() {
     };
     fetchLocations();
   }, []);
-
-  const handleFilterChange = (key, value) => {
-    console.log(key, value);
-  };
 
   // useEffect(() => {
   //   const animals = searchParams.getAll("animalTypes");
@@ -71,53 +76,81 @@ export default function Filters() {
   //   if (serachQuery) setSearchQuery(serachQuery);
   // }, [searchParams]);
 
-  const applyFilters = ({
-    types = selectedTypes,
-    min = minPrice,
-    max = maxPrice,
-    city = selectedLocation,
-    serachQuery = searchQuery,
-  }: {
-    types?: AnimalType[];
-    min?: string;
-    max?: string;
-    city?: string;
-    serachQuery?: string;
-  }) => {
-    const params = new URLSearchParams();
+  // const applyFilters = ({
+  //   types = selectedTypes,
+  //   min = minPrice,
+  //   max = maxPrice,
+  //   city = selectedLocation,
+  //   serachQuery = searchQuery,
+  // }: {
+  //   types?: AnimalType[];
+  //   min?: string;
+  //   max?: string;
+  //   city?: string;
+  //   serachQuery?: string;
+  // }) => {
+  //   const params = new URLSearchParams();
 
-    types.forEach((t) => params.append("animalTypes", t));
-    if (min) params.set("minPrice", min);
-    if (max) params.set("maxPrice", max);
-    if (city && city !== "all") params.set("city", city);
-    if (serachQuery) params.set("q", searchQuery);
+  //   types.forEach((t) => params.append("animalTypes", t));
+  //   if (min) params.set("minPrice", min);
+  //   if (max) params.set("maxPrice", max);
+  //   if (city && city !== "all") params.set("city", city);
+  //   if (serachQuery) params.set("q", searchQuery);
 
-    router.push(`?${params.toString()}`);
-  };
+  //   router.push(`?${params.toString()}`);
+  // };
 
-  const toggleType = (type: AnimalType) => {
-    const newSelected = selectedTypes.includes(type)
-      ? selectedTypes.filter((t) => t !== type)
-      : [...selectedTypes, type];
-    setSelectedTypes(newSelected);
-    applyFilters({ types: newSelected });
+  const toggleType = (type: AnimalType, filterType = "animalTypes") => {
+    const current = parsedSearchParams[filterType];
+
+    const currentTypes = Array.isArray(current)
+      ? current
+      : current
+        ? [current]
+        : [];
+
+    const isSelected = currentTypes.includes(type);
+
+    const valueToUpdate = isSelected
+      ? currentTypes.filter((t) => t !== type)
+      : [...currentTypes, type];
+
+    handleFilterChange(filterType, valueToUpdate);
   };
   const handleChangeCity = (value: string) => {
     setSelectedLocation(value);
-    applyFilters({ city: value });
+    // applyFilters({ city: value });
   };
 
-  const handlePriceChange = () => {
-    applyFilters({ min: minPrice, max: maxPrice });
-  };
+  // const handlePriceChange = (filterType, value) => {
+  //   setFilters({
+  //     ...filters,
+  //     [filterType]: value,
+  //   });
+  //   updateURL({
+  //     ...filters,
+  //     [filterType]: value,
+  //   });
+  // };
 
   const resetFilters = () => {
-    setSelectedTypes([]);
-    setMinPrice("");
-    setMaxPrice("");
-    setSelectedLocation("all");
-    setSearchQuery("");
     router.push("?");
+  };
+
+  const updateURL = (newFilters: SearchParams) => {
+    const queryString = stringifySearchParams(newFilters);
+    router.push(queryString ? `/?${queryString}` : "/");
+  };
+
+  const handleFilterChange = (
+    filterType: keyof SearchParams,
+    value: string | string[] | undefined
+  ) => {
+    const newFilters = {
+      ...parsedSearchParams,
+      [filterType]: Array.isArray(value) ? [...value] : value,
+    };
+    updateURL(newFilters);
   };
 
   if (loading) {
@@ -144,24 +177,23 @@ export default function Filters() {
       />
       <Button
         onClick={() => {
-          const params = new URLSearchParams();
-          if (selectedTypes.length > 0) {
-            selectedTypes.forEach((type) => params.append("animalTypes", type));
-          }
-          if (minPrice) {
-            params.set("minPrice", minPrice);
-          }
-          if (maxPrice) {
-            params.set("maxPrice", maxPrice);
-          }
-          if (selectedLocation && selectedLocation !== "all") {
-            params.set("city", selectedLocation);
-          }
-
-          if (searchQuery) {
-            params.set("q", searchQuery);
-          }
-          router.push(`?${params.toString()}`);
+          // const params = new URLSearchParams();
+          // if (selectedTypes.length > 0) {
+          //   selectedTypes.forEach((type) => params.append("animalTypes", type));
+          // }
+          // if (minPrice) {
+          //   params.set("minPrice", minPrice);
+          // }
+          // if (maxPrice) {
+          //   params.set("maxPrice", maxPrice);
+          // }
+          // if (selectedLocation && selectedLocation !== "all") {
+          //   params.set("city", selectedLocation);
+          // }
+          // if (searchQuery) {
+          //   params.set("q", searchQuery);
+          // }
+          // router.push(`?${params.toString()}`);
         }}
       >
         Szukaj
@@ -169,13 +201,11 @@ export default function Filters() {
       <div>
         <Label className="text-sm text-muted-foreground">Typy zwierząt</Label>
         <div className="flex flex-col gap-2 mt-2">
-          {JSON.stringify(filters)}
           {(Object.keys(animalLabels) as AnimalType[]).map((type) => (
             <div key={type} className="flex items-center space-x-2">
               <Checkbox
                 id={type}
-                // checked={filters["animalTypes"].includes(type)}
-                checked={false}
+                checked={parsedSearchParams.animalTypes?.includes(type)}
                 onCheckedChange={() => toggleType(type)}
               />
               <Label htmlFor={type}>{animalLabels[type]}</Label>
@@ -211,14 +241,14 @@ export default function Filters() {
             placeholder="Min"
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
-            onBlur={handlePriceChange}
+            onBlur={() => handlePriceChange("minPrice", minPrice)}
           />
           <Input
             type="number"
             placeholder="Max"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
-            onBlur={handlePriceChange}
+            onBlur={() => handlePriceChange("maxPrice", maxPrice)}
           />
         </div>
       </div>

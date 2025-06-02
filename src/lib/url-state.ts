@@ -8,14 +8,11 @@ export interface SearchParams {
   //   reviews?: boolean;
 }
 
-function toArray<T>(value: T | T[] | undefined): T[] | undefined {
-  if (!value) return undefined;
-  return Array.isArray(value) ? value : [value];
-}
-
 export function parseSearchParams(params: URLSearchParams): SearchParams {
   return {
-    animalTypes: params.getAll("animalTypes"),
+    animalTypes: params.getAll("animalTypes").length
+      ? params.getAll("animalTypes")
+      : undefined,
     minPrice: params.get("minPrice") ?? undefined,
     maxPrice: params.get("maxPrice") ?? undefined,
     city: params.get("city") ?? undefined,
@@ -26,10 +23,16 @@ export function parseSearchParams(params: URLSearchParams): SearchParams {
 
 export function stringifySearchParams(params: SearchParams) {
   const urlParams = new URLSearchParams();
+
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined) {
+    if (value === undefined) return;
+
+    if (Array.isArray(value)) {
+      value.forEach((val) => urlParams.append(key, val));
+    } else {
       urlParams.append(key, value);
     }
   });
+
   return urlParams.toString();
 }
