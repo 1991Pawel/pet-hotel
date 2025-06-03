@@ -29,21 +29,14 @@ const animalLabels: Record<AnimalType, string> = {
 export default function Filters() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const parsedSearchParams = useMemo(
-    () => parseSearchParams(searchParams),
-    [searchParams]
-  );
-  // const [filters, setFilters] = useState(parsedSearchParams);
+  const parsedSearchParams = parseSearchParams(searchParams)
+  const [filters, setFilters] = useState(parsedSearchParams);
+
   // const [minPrice, setMinPrice] = useState<string>(filters.minPrice ?? "");
   // const [maxPrice, setMaxPrice] = useState<string>(filters.maxPrice ?? "");
 
   // const [selectedTypes, setSelectedTypes] = useState<AnimalType[]>([]);
-  const [minPrice, setMinPrice] = useState<string>(
-    parsedSearchParams.minPrice ?? ""
-  );
-  const [maxPrice, setMaxPrice] = useState<string>(
-    parsedSearchParams.maxPrice ?? ""
-  );
+  
   const [locations, setLocations] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("all");
   const [loading, setLoading] = useState(true);
@@ -142,16 +135,29 @@ export default function Filters() {
     router.push(queryString ? `/?${queryString}` : "/");
   };
 
-  const handleFilterChange = (
-    filterType: keyof SearchParams,
-    value: string | string[] | undefined
-  ) => {
-    const newFilters = {
-      ...parsedSearchParams,
-      [filterType]: Array.isArray(value) ? [...value] : value,
-    };
-    updateURL(newFilters);
+ const handleFilterChange = (
+  filterType: keyof SearchParams,
+  value: string | string[] | undefined
+) => {
+  const newFilters = {
+    ...parsedSearchParams,
+    ...(value === undefined || value === "" || (Array.isArray(value) && value.length === 0)
+      ? { [filterType]: undefined }
+      : { [filterType]: value }),
   };
+
+  // remove key
+  if (
+    value === undefined ||
+    value === "" ||
+    (Array.isArray(value) && value.length === 0)
+  ) {
+    delete newFilters[filterType];
+  }
+
+  setFilters(newFilters);
+  updateURL(newFilters);
+};
 
   if (loading) {
     return (
@@ -239,16 +245,23 @@ export default function Filters() {
           <Input
             type="number"
             placeholder="Min"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            onBlur={() => handlePriceChange("minPrice", minPrice)}
+            value={filters.minPrice || ""}
+            onChange={(e) => {
+              handleFilterChange("minPrice",e.target.value)
+            }}
+            
+            // onChange={(e) => setMinPrice(e.target.value)}
+            // onBlur={() => handlePriceChange("minPrice", minPrice)}
           />
-          <Input
+          <Input 
             type="number"
             placeholder="Max"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            onBlur={() => handlePriceChange("maxPrice", maxPrice)}
+            value={filters.maxPrice || ""}
+            onChange={(e) => {
+              handleFilterChange("maxPrice",e.target.value)
+           
+            }}
+            // onBlur={() => handlePriceChange("maxPrice", maxPrice)}
           />
         </div>
       </div>
