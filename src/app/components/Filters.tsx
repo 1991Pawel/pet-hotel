@@ -7,7 +7,12 @@ import { Checkbox } from "@/app/components/Checkbox";
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
 import { Loading } from "@/app/components/Loading";
-import { parseSearchParams, SearchParams, stringifySearchParams } from "@/lib/url-state";
+import { useTransition, useOptimistic } from "react";
+import {
+  parseSearchParams,
+  SearchParams,
+  stringifySearchParams,
+} from "@/lib/url-state";
 
 import {
   Select,
@@ -19,6 +24,7 @@ import {
 import { getHotelsLocation } from "@/app/actions/locationActions";
 
 import { Button } from "@/app/components/Button";
+import { start } from "repl";
 
 const animalLabels: Record<AnimalType, string> = {
   DOG: "Psy",
@@ -29,12 +35,14 @@ const animalLabels: Record<AnimalType, string> = {
 export default function Filters() {
   const router = useRouter();
   const searchParams = useSearchParams();
-const filters: SearchParams = parseSearchParams(searchParams);
+  const initialFilters: SearchParams = parseSearchParams(searchParams);
 
   const [locations, setLocations] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
-
+  const [isPending, startTransition] = useTransition();
+  const [optimisticFilters, setOptimisticFilters] =
+    useOptimistic<SearchParams>(initialFilters);
   useEffect(() => {
     const fetchLocations = async () => {
       setLoading(true);
@@ -45,41 +53,43 @@ const filters: SearchParams = parseSearchParams(searchParams);
     fetchLocations();
   }, []);
 
-type SearchParamKey = keyof SearchParams;
+  type SearchParamKey = keyof SearchParams;
 
-const handleFilterChange = (
-  filterType: SearchParamKey,
-  value: string | string[] | undefined
-) => {
-  const newFilters: SearchParams = { ...filters };
+  const handleFilterChange = (
+    filterType: SearchParamKey,
+    value: string | string[] | undefined
+  ) => {
+    startTransition(() => {
+      const newFilters: SearchParams = { ...optimisticFilters };
 
-  const shouldRemove =
-    value === undefined ||
-    value === "" ||
-    (Array.isArray(value) && value.length === 0);
+      const shouldRemove =
+        value === undefined ||
+        value === "" ||
+        (Array.isArray(value) && value.length === 0);
 
-  if (shouldRemove) {
-    delete newFilters[filterType];
-  } else {
-    if (filterType === "animalTypes") {
-      newFilters.animalTypes = value as string[];
-    } else {
-      newFilters[filterType] = value as string;
-    }
-  }
+      if (shouldRemove) {
+        delete newFilters[filterType];
+      } else {
+        if (filterType === "animalTypes") {
+          newFilters.animalTypes = value as string[];
+        } else {
+          newFilters[filterType] = value as string;
+        }
+      }
 
-  const queryString = stringifySearchParams(newFilters);
-  router.push(queryString ? `/?${queryString}` : "/");
-};
-
+      setOptimisticFilters(newFilters);
+      const queryString = stringifySearchParams(newFilters);
+      router.push(queryString ? `/?${queryString}` : "/");
+    });
+  };
 
   const handleToggle = (type: AnimalType) => {
-    const current = filters.animalTypes;
+    const current = optimisticFilters.animalTypes;
     const currentTypes = Array.isArray(current)
       ? current
       : current
-      ? [current]
-      : [];
+        ? [current]
+        : [];
 
     const updatedTypes = currentTypes.includes(type)
       ? currentTypes.filter((t) => t !== type)
@@ -127,10 +137,14 @@ const handleFilterChange = (
             <div key={type} className="flex items-center space-x-2">
               <Checkbox
                 id={type}
-                checked={Array.isArray(filters.animalTypes)
-                  ? filters.animalTypes.includes(type)
-                  : filters.animalTypes === type}
-                onCheckedChange={() => handleToggle(type)}
+                checked={
+                  Array.isArray(optimisticFilters.animalTypes)
+                    ? optimisticFilters.animalTypes.includes(type)
+                    : optimisticFilters.animalTypes === type
+                }
+                onCheckedChange={() => {
+                  handleToggle(type);
+                }}
               />
               <Label htmlFor={type}>{animalLabels[type]}</Label>
             </div>
@@ -140,7 +154,7 @@ const handleFilterChange = (
 
       <Select
         defaultValue="all"
-        value={filters.city || "all"}
+        value={optimisticFilters.city || "all"}
         onValueChange={handleChangeCity}
       >
         <SelectTrigger className="w-[180px]">
@@ -157,18 +171,20 @@ const handleFilterChange = (
       </Select>
 
       <div>
-        <Label className="text-sm text-muted-foreground">Cena za noc (PLN)</Label>
+        <Label className="text-sm text-muted-foreground">
+          Cena za noc (PLN)
+        </Label>
         <div className="flex gap-2 mt-2">
           <Input
             type="number"
             placeholder="Min"
-            value={filters.minPrice || ""}
+            value={optimisticFilters.minPrice || ""}
             onChange={(e) => handleFilterChange("minPrice", e.target.value)}
           />
           <Input
             type="number"
             placeholder="Max"
-            value={filters.maxPrice || ""}
+            value={optimisticFilters.maxPrice || ""}
             onChange={(e) => handleFilterChange("maxPrice", e.target.value)}
           />
         </div>
