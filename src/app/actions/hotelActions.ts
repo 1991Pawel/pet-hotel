@@ -88,6 +88,12 @@ async function getHotelOwnersFromDb({
   try {
     const selectedHotels = {
       where: {
+        ...(searchQuery && {
+          name: {
+            contains: searchQuery,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        }),
         ...(animalTypes &&
           animalTypes.length > 0 && {
             acceptedAnimals: {

@@ -80,47 +80,57 @@ export default async function HomePage({
   };
 
   return (
-    <div className=" to-yellow-100 p-8">
-      <h1 className="text-4xl font-bold text-center text-orange-600">
+    <div className="p-8">
+      <h1 className="text-4xl font-bold text-center text-orange-600 mb-8">
         Hotele dla Psów 🐶
       </h1>
-      <Filters />
-      {hotelsData.hotels && (
-        <div className="container mx-auto px-4  m-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 auto-rows-auto ">
-            {hotelsData.hotels.map((hotel: Hotel) => (
-              <HotelCard key={hotel.id} hotel={hotel} />
-            ))}
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <aside className="lg:col-span-1">
+          <Filters />
+        </aside>
+
+        <main className="lg:col-span-4">
+          {hotelsData.hotels && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+              {hotelsData.hotels.map((hotel: Hotel) => (
+                <HotelCard key={hotel.id} hotel={hotel} />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-10 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                {currentPage > 1 && (
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href={getPaginationLink(currentPage - 1)}
+                    />
+                  </PaginationItem>
+                )}
+
+                {paginationPages.map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href={getPaginationLink(page)}
+                      isActive={page === currentPage}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+
+                {currentPage < totalPages && (
+                  <PaginationItem>
+                    <PaginationNext href={getPaginationLink(currentPage + 1)} />
+                  </PaginationItem>
+                )}
+              </PaginationContent>
+            </Pagination>
           </div>
-        </div>
-      )}
-
-      <Pagination>
-        <PaginationContent>
-          {currentPage > 1 && (
-            <PaginationItem>
-              <PaginationPrevious href={getPaginationLink(currentPage - 1)} />
-            </PaginationItem>
-          )}
-
-          {paginationPages.map((page) => (
-            <PaginationItem key={page}>
-              <PaginationLink
-                href={getPaginationLink(page)}
-                isActive={page === currentPage}
-              >
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-
-          {currentPage < totalPages && (
-            <PaginationItem>
-              <PaginationNext href={getPaginationLink(currentPage + 1)} />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
+        </main>
+      </div>
     </div>
   );
 }

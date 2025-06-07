@@ -24,7 +24,6 @@ import {
 import { getHotelsLocation } from "@/app/actions/locationActions";
 
 import { Button } from "@/app/components/Button";
-import { start } from "repl";
 
 const animalLabels: Record<AnimalType, string> = {
   DOG: "Psy",
@@ -39,10 +38,12 @@ export default function Filters() {
 
   const [locations, setLocations] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isPending, startTransition] = useTransition();
   const [optimisticFilters, setOptimisticFilters] =
     useOptimistic<SearchParams>(initialFilters);
+  const [searchQuery, setSearchQuery] = useState(
+    optimisticFilters.searchQuery || ""
+  );
   useEffect(() => {
     const fetchLocations = async () => {
       setLoading(true);
@@ -106,7 +107,11 @@ export default function Filters() {
   };
 
   const resetFilters = () => {
-    router.push("?");
+    startTransition(() => {
+      setOptimisticFilters({});
+      setSearchQuery("");
+      router.push("?");
+    });
   };
 
   if (loading) {
@@ -129,6 +134,13 @@ export default function Filters() {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
+      <Button
+        onClick={() => {
+          handleFilterChange("searchQuery", searchQuery.trim() || undefined);
+        }}
+      >
+        Szukaj
+      </Button>
 
       <div>
         <Label className="text-sm text-muted-foreground">Typy zwierząt</Label>

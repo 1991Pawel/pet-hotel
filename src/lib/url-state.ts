@@ -17,7 +17,7 @@ export function parseSearchParams(params: URLSearchParams): SearchParams {
     maxPrice: params.get("maxPrice") ?? undefined,
     city: params.get("city") ?? undefined,
     page: params.get("page") ?? undefined,
-    searchQuery: params.get("q") ?? undefined,
+    searchQuery: params.get("searchQuery") ?? undefined,
   };
 }
 
