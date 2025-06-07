@@ -1,24 +1,24 @@
 import React from "react";
-import UserPhotoUpload from "@/app/components/UserPhotoUpload";
-import Image from "next/image";
-import { getAuthUserId } from "@/app/actions/authActions";
-import { getMemberByUserId } from "@/app/actions/memberActions";
-import styles from "./page.module.css";
-import { notFound } from "next/navigation";
+// import UserPhotoUpload from "@/app/components/UserPhotoUpload";
+// import Image from "next/image";
+// import { getAuthUserId } from "@/app/actions/authActions";
+// import { getMemberByUserId } from "@/app/actions/memberActions";
+// import styles from "./page.module.css";
+// import { notFound } from "next/navigation";
 
 export default async function PhotosPage() {
-  const userId = await getAuthUserId();
-  const member = await getMemberByUserId(userId);
+  // const userId = await getAuthUserId();
+  // const member = await getMemberByUserId(userId);
 
-  if (!member) {
-    return notFound();
-  }
+  // if (!member) {
+  //   return notFound();
+  // }
 
   return (
     <div>
       PhotosPage
       <div>
-        {member.photos.map((photo) => (
+        {/* {member.photos.map((photo) => (
           <Image
             key={photo.id}
             className={styles.image}
@@ -27,8 +27,8 @@ export default async function PhotosPage() {
             width={300}
             height={300}
           />
-        ))}
-        <UserPhotoUpload />
+        ))} */}
+        {/* <UserPhotoUpload /> */}
       </div>
     </div>
   );

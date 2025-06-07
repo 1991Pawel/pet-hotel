@@ -42,7 +42,7 @@ const normalizeAnimalTypes = (
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams | undefined>;
 }) {
   const filterParams = (await searchParams) || {};
   const currentPage = Number(filterParams.page) || 1;

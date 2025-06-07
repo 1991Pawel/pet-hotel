@@ -1,25 +1,25 @@
 import styles from "./page.module.css";
-import { getInboxMessages } from "@/app/actions/messageActions";
-import { getSentMessages } from "@/app/actions/messageActions";
-import Link from "next/link";
-import { mapMessageToMessageDto } from "@/lib/mapping";
-import { MessagesTable } from "@/app/components/MessageTable";
+// import { getInboxMessages } from "@/app/actions/messageActions";
+// import { getSentMessages } from "@/app/actions/messageActions";
+// import Link from "next/link";
+// import { mapMessageToMessageDto } from "@/lib/mapping";
+// import { MessagesTable } from "@/app/components/MessageTable";
 
-export default async function MessagesPage({
-  searchParams,
-}: {
-  searchParams: { container: string };
-}) {
-  const container = searchParams?.container ?? "inbox";
+// export default async function MessagesPage({
+//   searchParams,
+// }: {
 
-  const messagesData =
-    container === "inbox" ? await getInboxMessages() : await getSentMessages();
+export default async function MessagesPage() {
+  // const container = searchParams?.container ?? "inbox";
 
-  const messages = messagesData?.data?.map(mapMessageToMessageDto);
+  // const messagesData =s
+  //   container === "inbox" ? await getInboxMessages() : await getSentMessages();
+
+  // const messages = messagesData?.data?.map(mapMessageToMessageDto);
 
   return (
     <div className={styles.page}>
-      {JSON.stringify(container)}
+      {/* {JSON.stringify(container)}
       {JSON.stringify(messages)}
       <nav className={styles.navbar}>
         <Link href="/messages?container=inbox" className={styles.link}>
@@ -29,7 +29,7 @@ export default async function MessagesPage({
           Wysłane
         </Link>
       </nav>
-      <MessagesTable messages={messages} isOutbox={container === "sent"} />
+      <MessagesTable messages={messages} isOutbox={container === "sent"} /> */}
     </div>
   );
 }

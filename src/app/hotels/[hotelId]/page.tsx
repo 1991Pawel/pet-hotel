@@ -2,13 +2,12 @@ import { getHotelById } from "@/app/actions/hotelActions";
 import { notFound } from "next/navigation";
 import { getAuthUserId } from "@/app/actions/authActions";
 import ReviewsList from "@/app/components/ReviewsList";
+import { AnimalType } from "@prisma/client";
 
 export default async function HotelId({
   params,
 }: {
-  params: {
-    hotelId: string;
-  };
+  params: Promise<{ hotelId: string }>;
 }) {
   const { hotelId } = await params;
   if (!hotelId) {
@@ -17,7 +16,7 @@ export default async function HotelId({
   const loggedUserId = await getAuthUserId({ required: false });
 
   const { hotel } = await getHotelById(hotelId, loggedUserId);
-  const canAddReview = hotel?.canAddReview;
+  // const canAddReview = hotel?.canAddReview;
 
   if (!hotel) {
     return notFound();
@@ -41,10 +40,11 @@ export default async function HotelId({
         <div className="md:col-span-2">
           {/* PHOTOS */}
           <div className="grid mb-6">
-            {photos.map((photo, index) => (
+            {photos.map((photo: { url: string }, index: number) => (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 key={index}
-                src={photo.url}
+                src={photo?.url}
                 alt={`Photo ${index + 1}`}
                 className={`col-span-2 md:col-span-1 w-full h-54 object-cover rounded-xl ${
                   index === 0 ? "md:row-span-2" : ""
@@ -102,7 +102,7 @@ export default async function HotelId({
               </h4>
               <div className="flex flex-wrap gap-2">
                 {acceptedAnimals && acceptedAnimals.length > 0 ? (
-                  acceptedAnimals.map((animal) => (
+                  acceptedAnimals.map((animal: AnimalType) => (
                     <span
                       key={animal}
                       className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-medium"

@@ -1,38 +1,38 @@
-"use client";
-import { useEffect, useState, useCallback } from "react";
-import styles from "./MessagesList.module.css";
-import { pusherClient } from "@/lib/pusher";
-export default function MessageList({ initialMessages, recipientId, chatId }) {
-  const [messages, setMessages] = useState(initialMessages);
+// "use client";
+// import { useEffect, useState, useCallback } from "react";
+// import styles from "./MessagesList.module.css";
+// import { pusherClient } from "@/lib/pusher";
+// export default function MessageList({ initialMessages, recipientId, chatId }) {
+//   const [messages, setMessages] = useState(initialMessages);
 
-  const handleNewMessage = useCallback((message: MessageDto) => {
-    setMessages((prevState) => {
-      return [...prevState, message];
-    });
-  }, []);
+//   const handleNewMessage = useCallback((message: MessageDto) => {
+//     setMessages((prevState) => {
+//       return [...prevState, message];
+//     });
+//   }, []);
 
-  useEffect(() => {
-    const channel = pusherClient.subscribe(chatId);
-    channel.bind("message:new", handleNewMessage);
+//   useEffect(() => {
+//     const channel = pusherClient.subscribe(chatId);
+//     channel.bind("message:new", handleNewMessage);
 
-    return () => {
-      channel.unsubscribe();
-      channel.unbind("message:new", handleNewMessage);
-    };
-  }, [chatId]);
+//     return () => {
+//       channel.unsubscribe();
+//       channel.unbind("message:new", handleNewMessage);
+//     };
+//   }, [chatId, handleNewMessage]);
 
-  return messages?.map((msg, index) => (
-    <div
-      key={index}
-      className={
-        msg.senderId === recipientId
-          ? styles.sentMessage
-          : styles.receivedMessage
-      }
-    >
-      <p className={styles.name}>{msg.senderName}</p>
-      <p className={styles.message}>{msg.text}</p>
-      <p className={styles.time}>{msg.created}</p>
-    </div>
-  ));
-}
+//   return messages?.map((msg, index) => (
+//     <div
+//       key={index}
+//       className={
+//         msg.senderId === recipientId
+//           ? styles.sentMessage
+//           : styles.receivedMessage
+//       }
+//     >
+//       <p className={styles.name}>{msg.senderName}</p>
+//       <p className={styles.message}>{msg.text}</p>
+//       <p className={styles.time}>{msg.created}</p>
+//     </div>
+//   ));
+// }

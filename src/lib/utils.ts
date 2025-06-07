@@ -15,3 +15,12 @@ export function getCheckboxGroupStatus(...values: boolean[]): CheckboxState {
   if (someChecked) return "indeterminate";
   return false;
 }
+
+export function assertString(
+  value: unknown,
+  errorMessage: string
+): asserts value is string {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new Error(errorMessage);
+  }
+}

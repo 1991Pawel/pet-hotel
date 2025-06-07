@@ -3,16 +3,14 @@ import style from "./page.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import ReviewForm from "@/app/components/ReviewForm";
+// import ReviewForm from "@/app/components/ReviewForm";
 import { getAuthUserId } from "@/app/actions/authActions";
 import ReviewsList from "@/app/components/ReviewsList";
 
 export default async function UsersId({
   params,
 }: {
-  params: {
-    userId: string;
-  };
+  params: Promise<{ userId: string }>;
 }) {
   const { userId } = await params;
   if (!userId) {
@@ -20,7 +18,7 @@ export default async function UsersId({
   }
   const loggedUserId = await getAuthUserId({ required: false });
 
-  const { hotel, canAddReview } = await getHotelById(userId, loggedUserId);
+  const { hotel } = await getHotelById(userId, loggedUserId);
 
   if (!hotel) {
     return notFound();
@@ -46,7 +44,7 @@ export default async function UsersId({
           />
         )}
         <ReviewsList reviews={hotel.reviews} />
-        {canAddReview && <ReviewForm />}
+        {/* {canAddReview && <ReviewForm />} */}
       </div>
     </div>
   );

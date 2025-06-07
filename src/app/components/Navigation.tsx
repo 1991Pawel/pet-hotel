@@ -2,12 +2,14 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { Button } from "@/app/components/Button";
 import LogoutButton from "@/app/components/LogoutButton";
-import {  DropdownMenu,
+import {
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuLabel,
-  DropdownMenuSeparator,} from "@/app/components/DropdownMenu";
+  DropdownMenuSeparator,
+} from "@/app/components/DropdownMenu";
 import Image from "next/image";
 
 const links = [
@@ -23,7 +25,7 @@ const links = [
 
 export default async function Navigation() {
   const session = await auth();
-  const userId = session?.user?.id || "";
+  // const userId = session?.user?.id || "";
   // const member = await getMemberByUserId(userId);
   // const memberPhotos = member?.photos ?? [];
   // const memberMainPhoto = memberPhotos.find((photo) => photo.isMain);
@@ -46,30 +48,29 @@ export default async function Navigation() {
           </ul>
 
           <div className="flex items-center gap-4">
-     
             <DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <div className="h-8 w-8 rounded-full overflow-hidden border border-gray-300 cursor-pointer">
-      <Image
-        src={"/assets/trash/placeholder-avatar.webp"}
-        alt="avatar"
-        width={32}
-        height={32}
-        className="object-cover"
-      />
-    </div>
-  </DropdownMenuTrigger>
-  <DropdownMenuContent align="end">
-    <DropdownMenuLabel>Moje konto</DropdownMenuLabel>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem asChild>
-      <Link href={`/edit-profil`}>Edytuj profil</Link>
-    </DropdownMenuItem>
-    <DropdownMenuItem asChild>
-    <LogoutButton />
-    </DropdownMenuItem>
-  </DropdownMenuContent>
-</DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="h-8 w-8 rounded-full overflow-hidden border border-gray-300 cursor-pointer">
+                  <Image
+                    src={"/assets/trash/placeholder-avatar.webp"}
+                    alt="avatar"
+                    width={32}
+                    height={32}
+                    className="object-cover"
+                  />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Moje konto</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href={`/edit-profil`}>Edytuj profil</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <LogoutButton />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       ) : (

@@ -38,7 +38,7 @@ export default function Filters() {
 
   const [locations, setLocations] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [optimisticFilters, setOptimisticFilters] =
     useOptimistic<SearchParams>(initialFilters);
   const [searchQuery, setSearchQuery] = useState(

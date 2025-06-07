@@ -16,28 +16,43 @@ import { Label } from "./Label";
 import { updateReview } from "../actions/reviewsActions";
 import { useRouter } from "next/navigation";
 
-export default function ReviewsList({ reviews }) {
-  const [modalState, setModalState] = useState({
+type Review = {
+  id: string;
+  content: string;
+  rating: number;
+  isUserReview?: boolean;
+  hotelOwnerId?: string;
+};
+
+type ModalState = {
+  open: boolean;
+  review: Review | null;
+};
+
+export default function ReviewsList({ reviews }: { reviews: Review[] }) {
+  const [modalState, setModalState] = useState<ModalState>({
     open: false,
     review: null,
   });
   const router = useRouter();
-  const [editedReview, setEditedReview] = useState(""); // Treść edytowanej opinii
-  const [editedRating, setEditedRating] = useState(5); // Edytowana ocena
+  const [editedReview, setEditedReview] = useState<string>(""); // Treść edytowanej opinii
+  const [editedRating, setEditedRating] = useState<number>(5); // Edytowana ocena
 
-  const handleReviewEdit = (e) => {
+  const handleReviewEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditedReview(e.target.value); // Aktualizowanie opinii
   };
 
-  const handleRatingChange = (e) => {
+  const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditedRating(Number(e.target.value)); // Aktualizowanie oceny
   };
 
   const handleSaveChanges = async () => {
+    if (!modalState.review) return; // zabezpieczenie
+
     const result = await updateReview({
       content: editedReview,
       rating: editedRating,
-      hotelOwnerId: modalState.review.hotelOwnerId,
+      // hotelOwnerId: modalState.review.hotelOwnerId!,
       reviewId: modalState.review.id,
     });
     if (result.status === "error") {
@@ -96,8 +111,7 @@ export default function ReviewsList({ reviews }) {
         open={modalState.open}
         onOpenChange={(open) => setModalState((prev) => ({ ...prev, open }))}
       >
-        <DialogTrigger></DialogTrigger>{" "}
-        {/* Przycisk triggera, jeśli chcesz go widocznego */}
+        <DialogTrigger></DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edytuj opinię</DialogTitle>
@@ -118,8 +132,8 @@ export default function ReviewsList({ reviews }) {
                 id="rating"
                 type="number"
                 value={editedRating}
-                min="1"
-                max="5"
+                min={1}
+                max={5}
                 onChange={handleRatingChange}
                 className="col-span-3"
               />

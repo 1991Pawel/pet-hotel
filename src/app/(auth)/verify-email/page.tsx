@@ -3,13 +3,13 @@ import { verifyEmail } from "@/app/actions/authActions";
 export default async function VerifyEmailPage({
   searchParams,
 }: {
-  searchParams: { token: string };
+  searchParams: Promise<{ token: string }>;
 }) {
-  const params = await searchParams;
-  const result = await verifyEmail(params.token);
+  const { token } = await searchParams;
+  const result = await verifyEmail(token);
   return (
     <div className="container mx-auto p-6 flex flex-col gap-4">
-      Zweryfikuj email token {params.token}
+      Zweryfikuj email token {token}
       {result.status === "success" ? (
         <div className="text-green-500">Email zweryfikowany</div>
       ) : (

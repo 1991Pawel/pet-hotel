@@ -4,7 +4,9 @@ import PusherClient from "pusher-js";
 const CLUSTER = "eu";
 
 declare global {
+  // eslint-disable-next-line no-var
   var pusherServerInstance: PusherServer | undefined;
+  // eslint-disable-next-line no-var
   var pusherClientInstance: PusherClient | undefined;
 }
 

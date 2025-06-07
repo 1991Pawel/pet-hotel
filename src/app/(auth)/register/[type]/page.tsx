@@ -10,7 +10,7 @@ import { Button } from "@/app/components/Button";
 export default async function RegisterPage({
   params,
 }: {
-  params: { type: string };
+  params: Promise<{ type: string }>;
 }) {
   const { type } = await params;
 

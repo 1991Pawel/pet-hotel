@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUserId } from "./authActions";
 
-
 export async function addReview(review: {
   content: string;
   rating: number;
@@ -26,8 +25,6 @@ export async function addReview(review: {
       throw new Error("User is not a valid PetOwner.");
     }
 
-
-
     const hotelOwner = await prisma.hotelOwner.findUnique({
       where: {
         userId: review.hotelOwnerId,
@@ -40,7 +37,6 @@ export async function addReview(review: {
       );
     }
 
-
     const existingReview = await prisma.review.findFirst({
       where: {
         petOwnerId: petOwner.id,
@@ -52,7 +48,6 @@ export async function addReview(review: {
       throw new Error("You have already reviewed this hotel.");
     }
 
-
     const createdReview = await prisma.review.create({
       data: {
         content: review.content,
@@ -61,8 +56,6 @@ export async function addReview(review: {
         petOwnerId: petOwner.id,
       },
     });
-
-
 
     return { status: "success", data: createdReview };
   } catch (error) {
@@ -81,7 +74,7 @@ export async function updateReview(review: {
   reviewId: string;
 }) {
   try {
-    const userId = await getAuthUserId();
+    const userId = await getAuthUserId({ required: true });
 
     if (!review.content || !review.rating || !review.reviewId) {
       throw new Error("Missing required fields.");

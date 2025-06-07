@@ -10,8 +10,8 @@ export default function ReviewForm() {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, errors, isValid },
-    setValue, // Destructure setValue to use in number conversion
+    formState: { errors },
+    // setValue,
   } = useForm<ReviewSchema>({
     resolver: zodResolver(reviewSchema),
   });
@@ -27,7 +27,6 @@ export default function ReviewForm() {
     };
 
     const result = await addReview(reviewData);
-
 
     if (result.status === "error") {
       alert(result.error);

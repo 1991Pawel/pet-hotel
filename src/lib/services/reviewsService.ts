@@ -1,3 +1,4 @@
+import { Hotel } from "@/app/hotels/page";
 import { ReviewWithRelations } from "@/types";
 
 export function hasUserAlreadyReviewed(
@@ -18,7 +19,7 @@ export function addUserReviewFlagToReviews(
   }));
 }
 
-export const hotelOwnersWithAvg = (hotelOwners) => {
+export const hotelOwnersWithAvg = (hotelOwners: Hotel[]) => {
   const hotelsWithAvg = hotelOwners.map((hotel) => {
     const reviews = hotel.reviews;
     const ratings = reviews.map((review: ReviewWithRelations) => review.rating);
@@ -35,8 +36,6 @@ export const hotelOwnersWithAvg = (hotelOwners) => {
       averageRating: avgRating,
     };
   });
-
-
 
   return hotelsWithAvg;
 };
