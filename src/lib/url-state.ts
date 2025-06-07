@@ -35,3 +35,21 @@ export function stringifySearchParams(params: SearchParams) {
 
   return urlParams.toString();
 }
+
+export const getPaginationLink = (filterParams: SearchParams, page: number) => {
+  const params = new URLSearchParams();
+
+  Object.entries(filterParams).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && key !== "page") {
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, v));
+      } else {
+        params.set(key, value.toString());
+      }
+    }
+  });
+
+  params.set("page", page.toString());
+
+  return `/?${params.toString()}`;
+};

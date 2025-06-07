@@ -2,9 +2,10 @@ import { getHotelOwners } from "@/app/actions/hotelActions";
 import HotelCard from "@/app/components/HotelCard";
 import Filters from "@/app/components/Filters";
 import { type SearchParams } from "@/lib/url-state";
-import { AnimalType } from "@prisma/client";
-
+import { normalizeAnimalTypes } from "@/lib/utils";
 import { mapHotelToHotelCard } from "@/lib/mapping";
+import { getPaginationLink } from "@/lib/url-state";
+import { getPaginationPages } from "@/lib/utils";
 import {
   Pagination,
   PaginationContent,
@@ -13,19 +14,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/app/components/Pagination";
-
-const getPaginationPages = (totalPages: number): number[] => {
-  return Array.from({ length: totalPages }, (_, i) => i + 1);
-};
-
-const normalizeAnimalTypes = (
-  animalTypes?: string | string[]
-): AnimalType[] | undefined =>
-  animalTypes
-    ? ((Array.isArray(animalTypes)
-        ? animalTypes
-        : [animalTypes]) as AnimalType[])
-    : undefined;
 
 export default async function HomePage({
   searchParams,
@@ -45,27 +33,10 @@ export default async function HomePage({
     limit: limit,
     reviews: true,
   });
+
   const totalCount = hotelsData.pagination.totalCount;
   const totalPages = Math.ceil(totalCount / limit);
   const paginationPages = getPaginationPages(totalPages);
-
-  const getPaginationLink = (page: number) => {
-    const params = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && key !== "page") {
-        if (Array.isArray(value)) {
-          value.forEach((v) => params.append(key, v));
-        } else {
-          params.set(key, value.toString());
-        }
-      }
-    });
-
-    params.set("page", page.toString());
-
-    return `/?${params.toString()}`;
-  };
 
   return (
     <div className="p-8">
@@ -98,7 +69,7 @@ export default async function HomePage({
                 {currentPage > 1 && (
                   <PaginationItem>
                     <PaginationPrevious
-                      href={getPaginationLink(currentPage - 1)}
+                      href={getPaginationLink(filterParams, currentPage - 1)}
                     />
                   </PaginationItem>
                 )}
@@ -106,7 +77,7 @@ export default async function HomePage({
                 {paginationPages.map((page) => (
                   <PaginationItem key={page}>
                     <PaginationLink
-                      href={getPaginationLink(page)}
+                      href={getPaginationLink(filterParams, page)}
                       isActive={page === currentPage}
                     >
                       {page}
@@ -116,7 +87,9 @@ export default async function HomePage({
 
                 {currentPage < totalPages && (
                   <PaginationItem>
-                    <PaginationNext href={getPaginationLink(currentPage + 1)} />
+                    <PaginationNext
+                      href={getPaginationLink(filterParams, currentPage + 1)}
+                    />
                   </PaginationItem>
                 )}
               </PaginationContent>

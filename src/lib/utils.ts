@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { type AnimalType } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -24,3 +25,16 @@ export function assertString(
     throw new Error(errorMessage);
   }
 }
+
+export const normalizeAnimalTypes = (
+  animalTypes?: string | string[]
+): AnimalType[] | undefined =>
+  animalTypes
+    ? ((Array.isArray(animalTypes)
+        ? animalTypes
+        : [animalTypes]) as AnimalType[])
+    : undefined;
+
+export const getPaginationPages = (totalPages: number): number[] => {
+  return Array.from({ length: totalPages }, (_, i) => i + 1);
+};
