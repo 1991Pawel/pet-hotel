@@ -1,8 +1,10 @@
 import { getHotelOwners } from "@/app/actions/hotelActions";
 import HotelCard from "@/app/components/HotelCard";
 import Filters from "@/app/components/Filters";
-import { SearchParams } from "@/lib/url-state";
+import { type SearchParams } from "@/lib/url-state";
 import { AnimalType } from "@prisma/client";
+
+import { mapHotelToHotelCard } from "@/lib/mapping";
 import {
   Pagination,
   PaginationContent,
@@ -11,20 +13,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/app/components/Pagination";
-
-type Hotel = {
-  id: string;
-  name: string | null;
-  userId: string;
-  rating?: number;
-  averageRating: number | null;
-  location: {
-    city: string;
-  } | null;
-  photos: {
-    url: string;
-  }[];
-};
 
 const getPaginationPages = (totalPages: number): number[] => {
   return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -93,10 +81,15 @@ export default async function HomePage({
         <main className="lg:col-span-4">
           {hotelsData.hotels && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
-              {hotelsData.hotels.map((hotel: Hotel) => (
-                <HotelCard key={hotel.id} hotel={hotel} />
+              {hotelsData.hotels.map((hotel) => (
+                <HotelCard key={hotel.id} hotel={mapHotelToHotelCard(hotel)} />
               ))}
             </div>
+          )}
+          {hotelsData.hotels.length === 0 && (
+            <p className="text-center text-muted-foreground mt-10">
+              Nie znaleziono hoteli spełniających kryteria filtrów.
+            </p>
           )}
 
           <div className="mt-10 flex justify-center">

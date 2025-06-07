@@ -2,7 +2,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
-import { AnimalType } from "@prisma/client";
+import { type AnimalType } from "@prisma/client";
+import { type HotelWithReviews } from "@/types";
 
 import {
   hasUserAlreadyReviewed,
@@ -10,7 +11,9 @@ import {
   hotelOwnersWithAvg,
 } from "@/lib/services/reviewsService";
 
-async function getHotelByIdFromDb(id: string) {
+async function getHotelByIdFromDb(
+  id: string
+): Promise<HotelWithReviews | null> {
   return prisma.hotelOwner.findUnique({
     where: { userId: id },
     include: {

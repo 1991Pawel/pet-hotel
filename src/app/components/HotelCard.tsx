@@ -1,21 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-
-export type HotelCardProps = {
-  hotel: {
-    id: string;
-    name: string | null;
-    userId: string;
-    rating?: number;
-    averageRating: number | null;
-    location: {
-      city: string;
-    } | null;
-    photos: {
-      url: string;
-    }[];
-  };
-};
+import type { HotelCardProps } from "@/types";
 
 const HotelCard = ({ hotel }: HotelCardProps) => {
   return (

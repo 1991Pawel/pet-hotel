@@ -1,12 +1,11 @@
-export interface SearchParams {
+export type SearchParams = {
   animalTypes?: string | string[];
   minPrice?: string;
   maxPrice?: string;
   city?: string;
   page?: string;
   searchQuery?: string;
-  //   reviews?: boolean;
-}
+};
 
 export function parseSearchParams(params: URLSearchParams): SearchParams {
   return {

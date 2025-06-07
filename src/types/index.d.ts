@@ -1,3 +1,4 @@
+import { AnimalType } from "@prisma/client";
 type MessageDto = {
   id: string;
   text: string;
@@ -36,21 +37,6 @@ type ReviewWithRelations = Prisma.ReviewGetPayload<{
   };
 }>;
 
-export type HotelCardProps = {
-  hotel: {
-    id: string;
-    name: string | null;
-    userId: string;
-    rating?: number;
-    averageRating: number | null;
-    location: {
-      city: string;
-    } | null;
-    photos: {
-      url: string;
-    }[];
-  };
-};
 type ActionResult<T> =
   | { status: "success"; data: T }
   | { status: "error"; error: string | ZodIssue[] };
@@ -60,7 +46,58 @@ export type HotelFilters = {
   rating: number;
   minPrice: number;
   maxPrice: number;
-  animalTypes: string[];
+  animalTypes: AnimalType[];
   searchQuery: string;
   page: number;
+};
+
+export interface Hotel {
+  id: string;
+  name: string | null;
+  userId: string;
+  averageRating: number | null;
+  rating?: number;
+  location: {
+    city: string;
+  } | null;
+  photos: {
+    id: string;
+    url: string;
+    publicId?: string | null;
+    isMain?: boolean;
+  }[];
+  reviews?: {
+    rating: number;
+  }[];
+}
+
+export type HotelWithReviews = Prisma.HotelOwnerGetPayload<{
+  include: {
+    reviews: {
+      select: { rating: true };
+    };
+    photos: true;
+    location: {
+      select: { city: true };
+    };
+  };
+}>;
+
+export type HotelWithAverage = HotelWithReviews & {
+  averageRating: number | null;
+  reviewsCount: number;
+};
+
+export type HotelCardProps = {
+  hotel: Pick<
+    HotelWithAverage,
+    "id" | "name" | "userId" | "averageRating" | "location" | "photos"
+  >;
+};
+
+export type HotelPhoto = {
+  id: string;
+  url: string;
+  publicId?: string | null;
+  isMain?: boolean;
 };

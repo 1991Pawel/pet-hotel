@@ -1,3 +1,9 @@
+import {
+  type HotelWithAverage,
+  type HotelCardProps,
+  type HotelPhoto,
+} from "@/types";
+
 // const formatDate = (date: string) => {
 //   const formatedData = new Date(date).toLocaleString("pl-PL", {
 //     day: "2-digit",
@@ -23,3 +29,21 @@
 //     recipientName: message.recipient?.name,
 //   };
 // }
+
+export function mapHotelToHotelCard(
+  hotel: HotelWithAverage
+): HotelCardProps["hotel"] {
+  return {
+    id: hotel.id,
+    name: hotel.name,
+    userId: hotel.userId,
+    averageRating: hotel.averageRating ?? null,
+    location: hotel.location,
+    photos: hotel.photos.map((p: HotelPhoto) => ({
+      id: p.id,
+      url: p.url,
+      publicId: p.publicId,
+      isMain: p.isMain,
+    })),
+  };
+}
