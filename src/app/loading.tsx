@@ -3,7 +3,7 @@ import { Skeleton } from "@/app/components/Skeleton";
 export default function Loading() {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-auto min-h-[200px]">
+      {/* <div className="flex-grow overflow-auto min-h-[200px]">
         <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 p-4">
           {Array.from({ length: 8 }).map((_, index) => (
             <div
@@ -17,7 +17,7 @@ export default function Loading() {
       </div>
       <div className="mt-auto p-4 border-t">
         <div className="h-10" />
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -1,11 +1,8 @@
 import { getHotelOwners } from "@/app/actions/hotelActions";
-import HotelCard from "@/app/components/HotelCard";
 import Filters from "@/app/components/Filters";
 import { type SearchParams } from "@/lib/url-state";
 import { normalizeAnimalTypes } from "@/lib/utils";
-import { mapHotelToHotelCard } from "@/lib/mapping";
-import { Suspense } from "react";
-
+import HotelGrid from "./components/HotelGrid";
 import HotelPagination from "@/app/components/HotelPagination";
 
 export default async function HomePage({
@@ -39,18 +36,7 @@ export default async function HomePage({
         </aside>
 
         <main className="lg:col-span-4">
-          <div className="group-has-[[data-pending]]:animate-pulse grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
-            {hotelsData?.hotels?.length > 0 ? (
-              hotelsData.hotels.map((hotel) => (
-                <HotelCard key={hotel.id} hotel={mapHotelToHotelCard(hotel)} />
-              ))
-            ) : (
-              <p className="text-muted-foreground text-center col-span-full">
-                Nie znaleziono hoteli spełniających kryteria filtrów.
-              </p>
-            )}
-          </div>
-
+          <HotelGrid hotels={hotelsData.hotels} />
           <div className="mt-10 flex justify-center">
             <HotelPagination
               currentPage={currentPage}

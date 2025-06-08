@@ -36,9 +36,7 @@ export default function Filters() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialFilters: SearchParams = parseSearchParams(searchParams);
-
   const [locations, setLocations] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
   const [, startTransition] = useTransition();
   const [optimisticFilters, setOptimisticFilters] =
     useOptimistic<SearchParams>(initialFilters);
@@ -47,10 +45,8 @@ export default function Filters() {
   );
   useEffect(() => {
     const fetchLocations = async () => {
-      setLoading(true);
       const data = await getHotelsLocation();
       setLocations(data);
-      setLoading(false);
     };
     fetchLocations();
   }, []);
@@ -114,14 +110,6 @@ export default function Filters() {
       router.push("?");
     });
   };
-
-  if (loading) {
-    return (
-      <div className="w-full space-y-6 bg-white p-4 rounded-xl shadow">
-        <Loading />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full space-y-6 bg-white p-4 rounded-xl shadow">
