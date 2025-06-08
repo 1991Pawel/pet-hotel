@@ -8,6 +8,7 @@ import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
 import { Loading } from "@/app/components/Loading";
 import { useTransition, useOptimistic } from "react";
+import { XIcon } from "lucide-react";
 import {
   parseSearchParams,
   SearchParams,
@@ -124,23 +125,38 @@ export default function Filters() {
 
   return (
     <div className="w-full space-y-6 bg-white p-4 rounded-xl shadow">
-      <div>
-        <p className="text-lg font-semibold">Filtry</p>
-      </div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
 
-      <Input
-        type="text"
-        placeholder="Szukaj po nazwie"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-      <Button
-        onClick={() => {
           handleFilterChange("searchQuery", searchQuery.trim() || undefined);
         }}
       >
-        Szukaj
-      </Button>
+        <div className="flex items-center space-x-2 mb-4">
+          <div className="relative flex-1">
+            <Input
+              type="text"
+              placeholder="Szukaj po nazwie"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <XIcon
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
+                onClick={() => {
+                  setSearchQuery("");
+                  handleFilterChange("searchQuery", undefined);
+                }}
+                size={20}
+              />
+            )}
+          </div>
+          <Button type="submit">Szukaj</Button>
+        </div>
+      </form>
+      <div>
+        <p className="text-lg font-semibold">Filtry</p>
+      </div>
 
       <div>
         <Label className="text-sm text-muted-foreground">Typy zwierząt</Label>
@@ -203,7 +219,11 @@ export default function Filters() {
       </div>
 
       <div className="flex justify-between">
-        <Button variant="outline" onClick={resetFilters} className="text-sm">
+        <Button
+          variant="outline"
+          onClick={resetFilters}
+          className="text-sm w-full"
+        >
           Wyczyść
         </Button>
       </div>

@@ -40,10 +40,6 @@ export default async function HomePage({
 
   return (
     <div className="p-8">
-      <h1 className="text-4xl font-bold text-center text-orange-600 mb-8">
-        Hotele dla Psów 🐶
-      </h1>
-
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         <aside className="lg:col-span-1">
           <Filters />
