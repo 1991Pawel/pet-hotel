@@ -1,32 +1,34 @@
 import { getHotelOwners } from "@/app/actions/hotelActions";
 import Filters from "@/app/components/Filters";
 import { type SearchParams } from "@/lib/url-state";
-import { normalizeAnimalTypes } from "@/lib/utils";
-import HotelGrid from "./components/HotelGrid";
-import HotelPagination from "@/app/components/HotelPagination";
+import { Suspense } from "react";
+
+// import HotelGrid from "./components/HotelGrid";
+// import HotelPagination from "@/app/components/HotelPagination";
+import  HotelTemplate  from "./components/templates/HotelTemplate";
 
 export default async function HomePage({
   searchParams,
 }: {
   searchParams: Promise<SearchParams | undefined>;
 }) {
-  const filterParams = (await searchParams) || {};
-  const currentPage = Number(filterParams.page) || 1;
-  const limit = 8;
+  // const filterParams = (await searchParams) || {};
+  // const currentPage = Number(filterParams.page) || 1;
+  // const limit = 8;
 
-  const hotelsData = await getHotelOwners({
-    animalTypes: normalizeAnimalTypes(filterParams.animalTypes),
-    searchQuery: filterParams.searchQuery,
-    minPrice: filterParams.minPrice,
-    maxPrice: filterParams.maxPrice,
-    city: filterParams.city,
-    page: currentPage,
-    limit: limit,
-    reviews: true,
-  });
+  // const hotelsData = await getHotelOwners({
+  //   animalTypes: normalizeAnimalTypes(filterParams.animalTypes),
+  //   searchQuery: filterParams.searchQuery,
+  //   minPrice: filterParams.minPrice,
+  //   maxPrice: filterParams.maxPrice,
+  //   city: filterParams.city,
+  //   page: currentPage,
+  //   limit: limit,
+  //   reviews: true,
+  // });
 
-  const totalCount = hotelsData.pagination.totalCount;
-  const totalPages = Math.ceil(totalCount / limit);
+  // const totalCount = hotelsData.pagination.totalCount;
+  // const totalPages = Math.ceil(totalCount / limit);
 
   return (
     <div className="p-8">
@@ -36,14 +38,16 @@ export default async function HomePage({
         </aside>
 
         <main className="lg:col-span-4">
-          <HotelGrid hotels={hotelsData.hotels} />
-          <div className="mt-10 flex justify-center">
-            <HotelPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              filterParams={filterParams}
-            />
-          </div>
+          {/* <HotelTemplate searchParams={searchParams} /> */}
+ 
+          <Suspense fallback={
+            null
+          }>
+           
+            <HotelTemplate searchParams={searchParams} />
+           </Suspense>
+        
+          
         </main>
       </div>
     </div>
