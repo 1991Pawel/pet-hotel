@@ -3,7 +3,7 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendVerificationEmail(email: string, token: string) {
-  const link = "http://localhost:3000/verify-email?token=" + token;
+  const link = `${process.env.DOMAIN}/verify-email?token=` + token;
 
   return resend.emails.send({
     from: "testring@resend.dev",
@@ -14,7 +14,7 @@ export async function sendVerificationEmail(email: string, token: string) {
 }
 
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const link = "http://localhost:3000/reset-password?token=" + token;
+  const link = `${process.env.DOMAIN}/reset-password?token=` + token;
 
   return resend.emails.send({
     from: "testring@resend.dev",
