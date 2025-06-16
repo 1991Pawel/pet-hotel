@@ -6,7 +6,6 @@ import { AnimalType } from "@prisma/client";
 import { Checkbox } from "@/app/components/Checkbox";
 import { Input } from "@/app/components/Input";
 import { Label } from "@/app/components/Label";
-import { Loading } from "@/app/components/Loading";
 import { useTransition, useOptimistic } from "react";
 import { XIcon } from "lucide-react";
 import {
@@ -173,7 +172,7 @@ export default function Filters() {
         value={optimisticFilters.city || "all"}
         onValueChange={handleChangeCity}
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Wszystkie" />
         </SelectTrigger>
         <SelectContent>

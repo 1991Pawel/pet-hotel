@@ -1,6 +1,5 @@
 import { getHotelOwners } from "../actions/hotelActions";
-
-import HotelCard from "@/app/components/HotelCard";
+import { HotelCard } from "@/app/components/HotelCard";
 
 export type Hotel = {
   id: string;
