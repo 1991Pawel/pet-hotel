@@ -6,6 +6,10 @@ This project is a lightweight full-stack application created to experiment with:
 - 🎨 **ShadCN** for modern UI components
 - 🛠️ **Prisma** for backend database access
 
+- ## Live Demo
+
+🌐 [pet-hotel-seven.vercel.app](https://pet-hotel-seven.vercel.app)
+
 ## Stack
 
 - **Frontend**: Next.js 14, ShadCN UI
